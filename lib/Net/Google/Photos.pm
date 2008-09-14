@@ -49,14 +49,14 @@ our $VERSION = '0.01';
   $album->save;
   $album->delete;
 
-  # Listing photos (see Net::Google::Photos::Entry)
-  my @photos      = $album->list_entries; 
-  my @recent      = $album->list_entries( max_results => 10 );
-  my @puppies     = $album->list_entries( q => 'puppies' );
-  my @all_puppies = $service->list_entries( q => 'puppies' );
+  # Listing photos (see Net::Google::Photos::MediaEntry)
+  my @photos      = $album->list_media_entries; 
+  my @recent      = $album->list_media_entries( max_results => 10 );
+  my @puppies     = $album->list_media_entries( q => 'puppies' );
+  my @all_puppies = $service->list_media_entries( q => 'puppies' );
 
   # Adding photos (or video)
-  my $photo = $album->add_entry(
+  my $photo = $album->add_media_entry(
       title     => 'plz-to-love-realcat.jpg',
       summary   => 'Real cat wants attention too.',
       mime_type => 'image/jpeg',
