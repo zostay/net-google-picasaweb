@@ -217,7 +217,7 @@ sub list_albums {
 
     my $user_id = delete $params{user_id} || 'default';
 
-    my $response = $self->_request(
+    my $response = $self->request(
         GET => [ 'user', $user_id ] => [ %params ]
     );
 
@@ -263,7 +263,7 @@ sub _feed_url {
     return $uri;
 }
 
-sub _request {
+sub request {
     my $self    = shift;
     my $method  = shift;
     my $path    = shift;
