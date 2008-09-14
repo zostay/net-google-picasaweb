@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 6;
+use Test::More tests => 8;
 use Test::Mock::LWP;
 use URI;
 
@@ -26,3 +26,7 @@ is(scalar @tags, 2, 'found 2 tags');
 
 is($tags[0], 'invisible', 'tag 1 is invisible');
 is($tags[1], 'bike', 'tag 2 is bike');
+
+$service->list_tags( user_id => 'foobar', q => 'blah' );
+is($Mock_request->{new_args}[1], 'GET', 'method is GET');
+ok(URI::eq($Mock_request->{new_args}[2], 'http://picasaweb.google.com/data/feed/api/user/foobar?kind=tag&q=blah'), 'URL is user/foobar');
