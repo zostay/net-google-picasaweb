@@ -87,6 +87,7 @@ This is an array of object containing information about the thumbnails that were
 has thumbnails => (
     is => 'rw',
     isa => 'ArrayRef[Net::Google::PicasaWeb::Media::Thumbnail]',
+    auto_deref => 1,
 );
 
 =head1 METHODS

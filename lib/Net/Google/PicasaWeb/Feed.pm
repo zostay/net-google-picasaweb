@@ -36,7 +36,7 @@ has author_name => (
     isa => 'Str',
 );
 
-has author_url => (
+has author_uri => (
     is => 'rw',
     isa => 'Str',
 );
@@ -75,10 +75,10 @@ sub from_feed {
     );
 
     if (my $author = $entry->first_child('author')) {
-        $params{author_name} = $entry->field('name')
-            if $entry->has_child('name');
-        $params{author_uri}  = $entry->field('uri')
-            if $entry->has_child('uri');
+        $params{author_name} = $author->field('name')
+            if $author->has_child('name');
+        $params{author_uri}  = $author->field('uri')
+            if $author->has_child('uri');
     }
 
     return $class->new(\%params);
