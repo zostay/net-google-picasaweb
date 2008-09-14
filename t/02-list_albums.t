@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More 'no_plan';
+use Test::More tests => 15;
 use Test::Mock::LWP;
 
 use_ok('Net::Google::PicasaWeb');
