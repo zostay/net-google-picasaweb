@@ -94,7 +94,7 @@ sub list_tags {
     $params{kind} = 'tag';
 
     my $user_id = delete $params{user_id} || 'default';
-    return $self->list_entries(
+    return $self->service->list_entries(
         'Net::Google::PicasaWeb::Tag',
         [ 'user', $self->user_id, 'albumid', $self->entry_id ],
         %params

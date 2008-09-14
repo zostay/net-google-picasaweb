@@ -79,6 +79,8 @@ sub from_feed {
             if $author->has_child('name');
         $params{author_uri}  = $author->field('uri')
             if $author->has_child('uri');
+        $params{user_id}   ||= $author->field('gphoto:user')
+            if $author->has_child('gphoto:user');
     }
 
     return $class->new(\%params);

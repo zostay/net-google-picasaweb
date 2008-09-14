@@ -66,7 +66,7 @@ override from_feed => sub {
     my ($class, $service, $entry) = @_;
     my $self = $class->super($service, $entry);
 
-    $self->album_id($entry->field('gphoto:album_id'));
+    $self->album_id($entry->field('gphoto:albumid'));
     return $self;
 };
 
@@ -91,7 +91,7 @@ sub list_tags {
     my ($self, %params) = @_;
     $params{kind} = 'tag';
 
-    return $self->list_entries(
+    return $self->service->list_entries(
         'Net::Google::PicasaWeb::Tag',
         $self->_feed_path,
         %params
@@ -110,7 +110,7 @@ sub list_comments {
     my ($self, %params) = @_;
     $params{kind} = 'comment';
 
-    return $self->list_entries(
+    return $self->service->list_entries(
         'Net::Google::PicasaWeb::Comment',
         $self->_feed_path,
         %params

@@ -137,8 +137,8 @@ sub from_feed {
 }
 
 sub _fetch {
-    my ($self, $which, %params) = @_;
-    my $url = $self->$which->url;
+    my ($self, $content, %params) = @_;
+    my $url = $content->url;
 
     my %header;
     $header{':content_file'} = $params{file} if $params{file};
