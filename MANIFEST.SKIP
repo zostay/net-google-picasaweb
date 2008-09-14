@@ -1,0 +1,7 @@
+.git
+.gitignore
+.*.swp
+cover_db
+blib
+Makefile
+MANIFEST.bak
