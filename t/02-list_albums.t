@@ -19,13 +19,6 @@ my $service = Net::Google::PicasaWeb->new;
     $Mock_response->set_always( content => do { local $/; <$fh> } );
 }
 
-#$Mock_ua->mock( request => sub {
-#    my ($self, $request);
-#    is($request->url, 
-#    is($request->method, 'GET', 'method is GET');
-#    return $Mock_response;
-#});
-
 my @albums = $service->list_albums;
 is($Mock_request->{new_args}[1], 'GET', 'method is GET');
 is($Mock_request->{new_args}[2], 'http://picasaweb.google.com/data/feed/api/user/default?kind=album', 'URL is user/default');
