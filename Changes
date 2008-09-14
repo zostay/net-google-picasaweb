@@ -1,5 +1,7 @@
 Revision history for Net-Google-PicasaWeb
 
-0.01    Date/time
-        First version, released on an unsuspecting world.
+0.01    September 14, 2008
+
+    * Initial implementation of the Google Picasa Web API
+    * Includes support for listing albums, photos, tags, and comments
 
