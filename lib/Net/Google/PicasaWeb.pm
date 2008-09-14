@@ -280,6 +280,18 @@ sub list_media_entries {
 *list_photos = *list_media_entries;
 *list_videos = *list_media_entries;
 
+=head1 HELPERS
+
+These helper methods are used to do some of the work.
+
+=head2 request
+
+  my $response = $service->request($method, $path, $query, $content);
+
+This handles the details of making a request to the Google Picasa Web API.
+
+=cut
+
 sub request {
     my $self    = shift;
     my $method  = shift;
@@ -303,6 +315,41 @@ sub request {
 
     return $self->user_agent->request($request);
 }
+
+=head2 list_entries
+
+  my @entries = $service->list_entries($class, $path, %params);
+
+This is used by the C<list_*> methods to pull and initialize lists of objects from feeds.
+
+=cut
+
+sub list_entries {
+    my ($self, $class, $path, %params) = @_;
+
+    my $response = $self->request( GET => $path => [ %params ] );
+
+    if ($response->is_error) {
+        croak $response->status_line;
+    }
+
+    my @items;
+    my $feed = XML::Twig->new( 
+        map_xmlns => {
+            'http://search.yahoo.com/mrss/'         => 'media',
+            'http://schemas.google.com/photos/2007' => 'gphoto',
+        },
+        twig_handlers => {
+            'entry' => sub {
+                push @items, $class->from_feed($self, $_);
+            },
+        },
+    );
+    $feed->parse($response->content);
+
+    return @items;
+}
+
 
 =head1 STANDARD LIST OPTIONS
 
@@ -357,34 +404,6 @@ This option is only used when listing albums and photos or videos.
 This may be set to the name of a geo location to search for items within. For example, "London".
 
 =back
-
-=cut
-
-sub list_entries {
-    my ($self, $class, $path, %params) = @_;
-
-    my $response = $self->request( GET => $path => [ %params ] );
-
-    if ($response->is_error) {
-        croak $response->status_line;
-    }
-
-    my @items;
-    my $feed = XML::Twig->new( 
-        map_xmlns => {
-            'http://search.yahoo.com/mrss/'         => 'media',
-            'http://schemas.google.com/photos/2007' => 'gphoto',
-        },
-        twig_handlers => {
-            'entry' => sub {
-                push @items, $class->from_feed($self, $_);
-            },
-        },
-    );
-    $feed->parse($response->content);
-
-    return @items;
-}
 
 =head1 AUTHOR
 

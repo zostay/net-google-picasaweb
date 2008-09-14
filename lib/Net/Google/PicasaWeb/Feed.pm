@@ -51,6 +51,16 @@ has user_id => (
     isa => 'Str',
 );
 
+=head1 METHODS
+
+=head2 from_feed
+
+  my $feed = $class->from_feed($service, $entry);
+
+This method creates the feed object from the service object and an L<XML::Twig::Elt> representing the element returned descring that object.
+
+=cut
+
 sub from_feed {
     my ($class, $service, $entry) = @_;
 

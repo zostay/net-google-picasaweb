@@ -89,6 +89,14 @@ has thumbnails => (
     isa => 'ArrayRef[Net::Google::PicasaWeb::Media::Thumbnail]',
 );
 
+=head1 METHODS
+
+=head2 from_feed
+
+Builds a media class from a service object and reference to a C<< <media:group> >> object in L<XML::Twig::Elt>.
+
+=cut
+
 sub from_feed {
     my ($class, $service, $media_group) = @_;
 
@@ -99,33 +107,32 @@ sub from_feed {
         twig        => $media_group,
         title       => $media_group->field('media:title'),
         description => $media_group->field('media:description'),
-        content     => Net::Google::PicasaWeb::Media::Content->new(
+    );       
+    
+    my $self = $class->new(\%params);
+
+    $self->content(
+        Net::Google::PicasaWeb::Media::Content->new(
+            media     => $self,
             url       => $content->att('url'),
             mime_type => $content->att('type'),
             medium    => $content->att('medium'),
-        ),
-        thumbnails  => [
+        )
+    );
+    $self->thumbnails(
+        [
             map { 
                 Net::Google::PicasaWeb::Media::Thumbnail->new(
+                    media  => $self,
                     url    => $_->att('url'),
                     width  => $_->att('width'),
                     height => $_->att('height'),
                 )
             } $media_group->children('media:thumbnail')
-        ],
-    );       
-    
-    return $class->new(\%params);
-}
+        ]
+    );
 
-sub fetch_content {
-    my $self = shift;
-    return $self->_fetch('content', @_);
-}
-
-sub fetch_thumbnail {
-    my $self = shift;
-    return $self->_fetch('thumbnail', @_);
+    return $self;
 }
 
 sub _fetch {
@@ -153,6 +160,19 @@ use Moose;
 The object returned from the L</content> accessor is an object with the following accessors and methods.
 
 =head2 ATTRIBUTES
+
+=head3 media
+
+This is the parent L<Net::Google::PicasaWeb::Media> object.
+
+=cut
+
+has media => (
+    is => 'rw',
+    isa => 'Net::Google::PicasaWeb::Media',
+    required => 1,
+    weaken => 1,
+);
 
 =head3 url
 
@@ -199,6 +219,31 @@ has medium => (
     isa => 'Str',
 );
 
+=head1 METHODS
+
+=head2 fetch
+
+  my $data = $content->fetch(%params);
+
+Fetches the image or video from Picasa Web. By default, this method returns the file data as a scalar.
+
+This method accepts the following parameters, which modify this behavior:
+
+=over
+
+=item file
+
+If given, the data will not be returned, but saved to the named file instead.
+
+=back
+
+=cut
+
+sub fetch {
+    my $self = shift;
+    return $self->media->_fetch($self, @_);
+}
+
 package Net::Google::PicasaWeb::Media::Thumbnail;
 use Moose;
 
@@ -207,6 +252,19 @@ use Moose;
 Each thumbnail returned represents an individual image resource used as a thumbnail for the main item. Each one has the following attributes and methods.
 
 =head2 ATTRIBUTES
+
+=head3 media
+
+This is the parent L<Net::Google::PicasaWeb::Media> object.
+
+=cut
+
+has media => (
+    is => 'rw',
+    isa => 'Net::Google::PicasaWeb::Media',
+    required => 1,
+    weaken => 1,
+);
 
 =head3 url
 
@@ -240,6 +298,31 @@ has height => (
     is => 'rw',
     isa => 'Int',
 );
+
+=head1 METHODS
+
+=head2 fetch
+
+  my $data = $thumbnail->fetch(%params);
+
+Fetches the thumbnail image from Picasa Web. By default, this method returns the image data as a scalar.
+
+This method accepts the following parameters, which modify this behavior:
+
+=over
+
+=item file
+
+If given, the data will not be returned, but saved to the named file instead.
+
+=back
+
+=cut
+
+sub fetch {
+    my $self = shift;
+    return $self->media->_fetch($self, @_);
+}
 
 =head1 AUTHOR
 
