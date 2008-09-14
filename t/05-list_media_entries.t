@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 25;
+use Test::More tests => 37;
 use Test::Mock::LWP;
 use URI;
 
@@ -66,3 +66,35 @@ is(scalar @thumbnails, 3, 'photo has 3 thumbnails');
 $service->list_photos( user_id => 'foobar', q => 'blah' );
 is($Mock_request->{new_args}[1], 'GET', 'method is GET');
 ok(URI::eq($Mock_request->{new_args}[2], 'http://picasaweb.google.com/data/feed/api/user/foobar?kind=photo&q=blah'), 'URL is user/foobar');
+
+# Setup the list albums response
+{
+    open my $fh, 't/data/list_tags.xml' or die "failed to open test data: $!";
+    $Mock_response->set_always( content => do { local $/; <$fh> } );
+}
+
+my @tags = $media->list_tags;
+is($Mock_request->{new_args}[1], 'GET', 'method is GET');
+is($Mock_request->{new_args}[2], 'http://picasaweb.google.com/data/feed/api/user/captaincool/albumid/5149978741790672209/photoid/5150621887373445842?kind=tag', 'URL is photoid URL');
+is(scalar @tags, 2, 'found 2 tags');
+
+is($tags[0], 'invisible', 'tag 1 is invisible');
+is($tags[1], 'bike', 'tag 2 is bike');
+
+# Setup the list comments response
+{
+    open my $fh, 't/data/list_comments.xml' or die "failed to open test data: $!";
+    $Mock_response->set_always( content => do { local $/; <$fh> } );
+}
+
+my @comments = $media->list_comments;
+is($Mock_request->{new_args}[1], 'GET', 'method is GET');
+is($Mock_request->{new_args}[2], 'http://picasaweb.google.com/data/feed/api/user/captaincool/albumid/5149978741790672209/photoid/5150621887373445842?kind=comment', 'URL is photoid URL');
+is(scalar @comments, 1, 'found 1 comments');
+
+my $comment = $comments[0];
+is($comment->title, 'Liz', 'title is Liz');
+is($comment->content, 'I do say! What an amusing image!', 'content is correct');
+is($comment->author_name, 'Liz', 'author_name is Liz');
+is($comment->author_uri, 'http://picasaweb.google.com/liz', 'author_uri is correct');
+
