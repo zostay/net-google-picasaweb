@@ -9,7 +9,7 @@ use HTTP::Request::Common;
 use LWP::UserAgent;
 use Net::Google::AuthSub;
 use URI;
-use XML::Atom::Feed;
+use XML::Twig;
 
 use Net::Google::Photos::Album;
 
@@ -225,12 +225,22 @@ sub list_albums {
         croak $response->status_line;
     }
 
-    my $content = $response->content;
-    my $feed = XML::Atom::Feed->new(\$content);
+    my @albums;
+    my $feed = XML::Twig->new( 
+        map_xmlns => {
+            'http://search.yahoo.com/mrss/' => 'media',
+        },
+        twig_handlers => {
+            'entry' => sub {
+                push @albums, 
+                    Net::Google::Photos::Album->from_feed($self, $_);
+            },
+        },
+    );
+    $feed->parse($response->content);
 
-    return map { Net::Google::Photos::Album->from_feed($self, $_) } $feed->entries;
+    return @albums;
 }
-
 
 =back
 

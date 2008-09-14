@@ -9,7 +9,7 @@ build_requires 'Test::More';
 requires 'LWP::UserAgent';
 requires 'Net::Google::AuthSub';
 requires 'URI';
-requires 'XML::Atom';
+requires 'XML::Twig';
 
 auto_install;
 
