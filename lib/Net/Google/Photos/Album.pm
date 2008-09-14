@@ -4,7 +4,7 @@ use warnings;
 package Net::Google::Photos::Album;
 use Moose;
 
-extends 'Net::Google::Photos::Base';
+extends 'Net::Google::Photos::Feed';
 
 use Net::Google::Photos::Media;
 
@@ -19,6 +19,8 @@ Net::Google::Photos::Album - represents a single Picasa Web photo album
       print "Title: ", $album->title, "\n";
       print "Summary: ", $album->summary, "\n";
       print "Author: ", $album->author_name, " (", $album->author_uri, ")\n";
+
+      $album->fetch_content( file => 'cover-photo.jpg' );
   }
 
 =head1 DESCRIPTION
@@ -29,88 +31,82 @@ Represents an individual Picasa Web photo album.
 
 =head2 title
 
-This is the title of the albums.
-
-=cut
-
-has title => (
-    is => 'rw',
-    isa => 'Str',
-);
+This is the title of the album.
 
 =head2 summary
 
 This is the summary of the album.
 
-=cut
-
-has summary => (
-    is => 'rw',
-    isa => 'Str',
-);
-
 =head2 author_name
 
 This is the author/owner of the album.
-
-=cut
-
-has author_name => (
-    is => 'rw',
-    isa => 'Str',
-);
 
 =head2 author_uri
 
 This is the URL to get to the author's public albums on Picasa Web.
 
-=cut
+=head2 photo
 
-has author_url => (
-    is => 'rw',
-    isa => 'Str',
-);
-
-=head2 cover
-
-This is a link to the L<Net::Google::Photos::Media> object that is used as the album cover.
-
-=cut
-
-has cover => (
-    is => 'rw',
-    isa => 'Net::Google::Photos::Media',
-);
+This is a link to the L<Net::Google::Photos::Media> object that is used to reference the cover photo and thumbnails of it.
 
 =head1 METHODS
 
+=head2 list_media_entries
+
+  my @photos = $album->list_media_entries(%params);
+
+Lists photos and video entries in the album. Options may be used to modify the photos returned.
+
+=over
+
+=item access
+
+This is the L<http://code.google.com/apis/picasaweb/reference.html#Visibility|visibility value> to limit the returned results to.
+
+=item thumbsize
+
+By passing a single scalar or an array reference of scalars, you may select the size or sizes of thumbnails attached to the photo returned. Please see the L<http://code.google.com/apis/picasaweb/reference.html#Parameters|parameters> documentation for a description of valid values.
+
+=item imgmax
+
+This is a single scalar selecting the size of the main image to return with the photos found. Please see the L<http://code.google.com/apis/picasaweb/reference.html#Parameters|parameters> documentation for a description of valid values.
+
+=item tag
+
+This is a tag name to use to filter the photos returned.
+
+=item q
+
+This is a full-text query string to filter the photos returned.
+
+=item max_results
+
+This is the maximum number of results to be returned.
+
+=item start_index
+
+This is the 1-based index of the first result to be returned.
+
+=item bbox
+
+This is the bounding box of geo coordinates to search for photos within. The coordinates are given as an array reference of exactly 4 values given in the following order: west, south, east, north.
+
+=item l
+
+This may be set to the name of a geo location to search for photos within. For example, "London".
+
+=back
+
 =cut
 
-sub from_feed {
-    my ($class, $service, $entry) = @_;
+sub list_media_entries {
+    my ($self, %params) = @_;
 
-    my %params = (
-        service => $service,
-        twig    => $entry,
-        title   => $entry->field('title'),
-        summary => $entry->field('summary'),
+    return $self->service->list_entries(
+        'Net::Google::Photos::MediaEntry',
+        [ 'user', $self->user_id, 'albumid', $self->entry_id ],
+        %params,
     );
-
-    if (my $author = $entry->first_child('author')) {
-        $params{author_name} = $entry->field('name')
-            if $entry->has_child('name');
-        $params{author_uri}  = $entry->field('uri')
-            if $entry->has_child('uri');
-    }
-
-    my $self = $class->new(\%params);
-
-    my $media = Net::Google::Photos::Media->from_feed(
-        $self->service, $entry->first_child('media:group')
-    );
-    $self->cover($media);
-
-    return $self;
 }
 
 =head1 AUTHOR

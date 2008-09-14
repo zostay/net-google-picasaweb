@@ -21,16 +21,15 @@ has content => (
     isa => 'Net::Google::Photos::Media::Content',
 );
 
-has thumbnail => (
+has thumbnails => (
     is => 'rw',
-    isa => 'Net::Google::Photos::Media::Thumbnail',
+    isa => 'ArrayRef[Net::Google::Photos::Media::Thumbnail]',
 );
 
 sub from_feed {
     my ($class, $service, $media_group) = @_;
 
-    my $content   = $media_group->first_child('media:content');
-    my $thumbnail = $media_group->first_child('media:thumbnail');
+    my $content = $media_group->first_child('media:content');
 
     my %params = (
         service     => $service,
@@ -42,13 +41,17 @@ sub from_feed {
             mime_type => $content->att('type'),
             medium    => $content->att('medium'),
         ),
-        thumbnail   => Net::Google::Photos::Media::Thumbnail->new(
-            url    => $thumbnail->att('url'),
-            width  => $thumbnail->att('width'),
-            height => $thumbnail->att('height'),
-        ),
+        thumbnails  => [
+            map { 
+                Net::Google::Photos::Media::Thumbnail->new(
+                    url    => $_->att('url'),
+                    width  => $_->att('width'),
+                    height => $_->att('height'),
+                )
+            } $media_group->children('media:thumbnail')
+        ],
     );       
-
+    
     return $class->new(\%params);
 }
 

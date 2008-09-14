@@ -12,6 +12,7 @@ use URI;
 use XML::Twig;
 
 use Net::Google::Photos::Album;
+use Net::Google::Photos::MediaEntry;
 
 =head1 NAME
 
@@ -216,30 +217,11 @@ sub list_albums {
     my ($self, %params) = @_;
 
     my $user_id = delete $params{user_id} || 'default';
-
-    my $response = $self->request(
-        GET => [ 'user', $user_id ] => [ %params ]
+    return $self->list_entries(
+        'Net::Google::Photos::Album',
+        [ 'user', $user_id ],
+        %params
     );
-
-    if ($response->is_error) {
-        croak $response->status_line;
-    }
-
-    my @albums;
-    my $feed = XML::Twig->new( 
-        map_xmlns => {
-            'http://search.yahoo.com/mrss/' => 'media',
-        },
-        twig_handlers => {
-            'entry' => sub {
-                push @albums, 
-                    Net::Google::Photos::Album->from_feed($self, $_);
-            },
-        },
-    );
-    $feed->parse($response->content);
-
-    return @albums;
 }
 
 =back
@@ -285,6 +267,32 @@ sub request {
     }
 
     return $self->user_agent->request($request);
+}
+
+sub list_entries {
+    my ($self, $class, $path, %params) = @_;
+
+    my $response = $self->request( GET => $path => [ %params ] );
+
+    if ($response->is_error) {
+        croak $response->status_line;
+    }
+
+    my @items;
+    my $feed = XML::Twig->new( 
+        map_xmlns => {
+            'http://search.yahoo.com/mrss/'         => 'media',
+            'http://schemas.google.com/photos/2007' => 'gphoto',
+        },
+        twig_handlers => {
+            'entry' => sub {
+                push @items, $class->from_feed($self, $_);
+            },
+        },
+    );
+    $feed->parse($response->content);
+
+    return @items;
 }
 
 =head1 AUTHOR
