@@ -57,43 +57,7 @@ This is a link to the L<Net::Google::Photos::Media> object that is used to refer
 
 Lists photos and video entries in the album. Options may be used to modify the photos returned.
 
-=over
-
-=item access
-
-This is the L<http://code.google.com/apis/picasaweb/reference.html#Visibility|visibility value> to limit the returned results to.
-
-=item thumbsize
-
-By passing a single scalar or an array reference of scalars, you may select the size or sizes of thumbnails attached to the photo returned. Please see the L<http://code.google.com/apis/picasaweb/reference.html#Parameters|parameters> documentation for a description of valid values.
-
-=item imgmax
-
-This is a single scalar selecting the size of the main image to return with the photos found. Please see the L<http://code.google.com/apis/picasaweb/reference.html#Parameters|parameters> documentation for a description of valid values.
-
-=item tag
-
-This is a tag name to use to filter the photos returned.
-
-=item q
-
-This is a full-text query string to filter the photos returned.
-
-=item max_results
-
-This is the maximum number of results to be returned.
-
-=item start_index
-
-This is the 1-based index of the first result to be returned.
-
-=item bbox
-
-This is the bounding box of geo coordinates to search for photos within. The coordinates are given as an array reference of exactly 4 values given in the following order: west, south, east, north.
-
-=item l
-
-This may be set to the name of a geo location to search for photos within. For example, "London".
+This method takes the L<Net::Google::Photos/STANDARD LIST OPTIONS>.
 
 =back
 
@@ -101,6 +65,7 @@ This may be set to the name of a geo location to search for photos within. For e
 
 sub list_media_entries {
     my ($self, %params) = @_;
+    $params{kind} = 'photo';
 
     return $self->service->list_entries(
         'Net::Google::Photos::MediaEntry',

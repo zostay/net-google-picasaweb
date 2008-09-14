@@ -138,46 +138,15 @@ This will list a set of albums available from Picasa Web Albums. If no C<%params
 
 This is the user ID to request a list of albums from. The defaults to "default", which lists those belonging to the current authenticated user.
 
-=item access
+=back
 
-This is the L<http://code.google.com/apis/picasaweb/reference.html#Visibility|visibility value> to limit the returned results to.
-
-=item thumbsize
-
-By passing a single scalar or an array reference of scalars, you may select the size or sizes of thumbnails attached to the album returned. Please see the L<http://code.google.com/apis/picasaweb/reference.html#Parameters|album parameters> documentation for a description of valid values.
-
-=item imgmax
-
-This is a single scalar selecting the size of the main image to return with the albums found. Please see the L<http://code.google.com/apis/picasaweb/reference.html#Parameters|album parameters> documentation for a description of valid values.
-
-=item tag
-
-This is a tag name to use to filter the albums returned.
-
-=item q
-
-This is a full-text query string to filter the albums returned.
-
-=item max_results
-
-This is the maximum number of results to be returned.
-
-=item start_index
-
-This is the 1-based index of the first result to be returned.
-
-=item bbox
-
-This is the bounding box of geo coordinates to search for albums within. The coordinates are given as an array reference of exactly 4 values given in the following order: west, south, east, north.
-
-=item l
-
-This may be set to the name of a geo location to search for albums within. For example, "London".
+This method also takes the L</STANDARD LIST OPTIONS>.
 
 =cut
 
 sub list_albums {
     my ($self, %params) = @_;
+    $params{kind} = 'album';
 
     my $user_id = delete $params{user_id} || 'default';
     return $self->list_entries(
@@ -187,9 +156,54 @@ sub list_albums {
     );
 }
 
+=head2 list_tags
+
+Returns a list of tags that have been used by the logged user or the user named in the C<user_id> parameter.
+
+This method accepts this parameters:
+
+=over
+
+=item user_id
+
+The ID of the user to find tags for. Defaults to the current user.
+
 =back
 
-=head2 list_tags
+This method also takes all the L</STANDARD LIST OPTIONS>.
+
+=cut
+
+# This is a tiny cheat that allows us to reuse the list_entries method
+{
+    package Net::Google::Photos::Tag;
+
+    sub new {
+        my $class = shift;
+        return bless {}, $class;
+    }
+
+    sub from_feed {
+        my ($class, $service, $entry) = @_;
+        return $entry->field('title');
+    }
+}
+
+sub list_tags {
+    my ($self, %params) = @_;
+    $params{kind} = 'tag';
+
+    my $user_id = delete $params{user_id} || 'default';
+    return $self->list_entries(
+        Net::Google::Photos::Tag->new,
+        [ 'user', $user_id ],
+        %params
+    );
+}
+
+=head2 list_comments
+
+Returns comments on photos for the current account or the account given by the C<user_id> parameter.
 
 =head2 list_comments
 
@@ -229,6 +243,62 @@ sub request {
 
     return $self->user_agent->request($request);
 }
+
+=head1 STANDARD LIST OPTIONS
+
+Several of the listing methods return entries that can be modified by setting the following options.
+
+=over
+
+=item access
+
+This is the L<http://code.google.com/apis/picasaweb/reference.html#Visibility|visibility value> to limit the returned results to.
+
+=item thumbsize
+
+This option is only used when listing albums and photos or videos.
+
+By passing a single scalar or an array reference of scalars, you may select the size or sizes of thumbnails attached to the items returned. Please see the L<http://code.google.com/apis/picasaweb/reference.html#Parameters|parameters> documentation for a description of valid values.
+
+=item imgmax
+
+This option is only used when listing albums and photos or videos.
+
+This is a single scalar selecting the size of the main image to return with the items found. Please see the L<http://code.google.com/apis/picasaweb/reference.html#Parameters|parameters> documentation for a description of valid values.
+
+=item tag
+
+This option is only used when listing albums and photos or videos.
+
+This is a tag name to use to filter the items returned.
+
+=item q
+
+This is a full-text query string to filter the items returned.
+
+=item max_results
+
+This is the maximum number of results to be returned.
+
+=item start_index
+
+This is the 1-based index of the first result to be returned.
+
+=item bbox
+
+This option is only used when listing albums and photos or videos.
+
+This is the bounding box of geo coordinates to search for items within. The coordinates are given as an array reference of exactly 4 values given in the following order: west, south, east, north.
+
+=item l
+
+This option is only used when listing albums and photos or videos.
+
+This may be set to the name of a geo location to search for items within. For example, "London".
+
+=back
+
+=cut
 
 sub list_entries {
     my ($self, $class, $path, %params) = @_;
