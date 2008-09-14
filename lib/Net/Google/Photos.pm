@@ -12,6 +12,7 @@ use URI;
 use XML::Twig;
 
 use Net::Google::Photos::Album;
+use Net::Google::Photos::Comment;
 use Net::Google::Photos::MediaEntry;
 
 =head1 NAME
@@ -205,9 +206,31 @@ sub list_tags {
 
 Returns comments on photos for the current account or the account given by the C<user_id> parameter.
 
-=head2 list_comments
+It accepts the following parameters:
+
+=over
+
+=item user_id
+
+This is the ID of the user to search for comments within. The comments returned will be commons on photos owned by this user. The default is to search the comments of the authenticated user.
+
+=back
+
+This method also accepts the L</STANDARD LIST OPTIONS>.
 
 =cut
+
+sub list_comments {
+    my ($self, %params) = @_;
+    $params{kind} = 'comment';
+
+    my $user_id = delete $params{user_id} || 'default';
+    return $self->list_entries(
+        'Net::Google::Photos::Comment',
+        [ 'user', $user_id ],
+        %params
+    );
+}
 
 sub _feed_url {
     my ($self, $path, $query) = @_;

@@ -78,10 +78,12 @@ sub from_feed {
 
     my $self = $class->new(\%params);
 
-    my $media = Net::Google::Photos::Media->from_feed(
-        $self->service, $entry->first_child('media:group')
-    );
-    $self->photo($media);
+    if ($entry->has_child('media:group')) {
+        my $media = Net::Google::Photos::Media->from_feed(
+            $self->service, $entry->first_child('media:group')
+        );
+        $self->photo($media);
+    }
 
     return $self;
 }
