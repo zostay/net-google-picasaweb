@@ -1,14 +1,14 @@
 use strict;
 use warnings;
 
-package Net::Google::Photos::Media;
+package Net::Google::PicasaWeb::Media;
 use Moose;
 
-extends 'Net::Google::Photos::Base';
+extends 'Net::Google::PicasaWeb::Base';
 
 =head1 NAME
 
-Net::Google::Photos::Media - hold information about a photo or video
+Net::Google::PicasaWeb::Media - hold information about a photo or video
 
 =head1 SYNOPSIS
 
@@ -75,7 +75,7 @@ This is the main photo or video item attached to the media information entry. Se
 
 has content => (
     is => 'rw',
-    isa => 'Net::Google::Photos::Media::Content',
+    isa => 'Net::Google::PicasaWeb::Media::Content',
 );
 
 =head2 thumbnails
@@ -86,7 +86,7 @@ This is an array of object containing information about the thumbnails that were
 
 has thumbnails => (
     is => 'rw',
-    isa => 'ArrayRef[Net::Google::Photos::Media::Thumbnail]',
+    isa => 'ArrayRef[Net::Google::PicasaWeb::Media::Thumbnail]',
 );
 
 sub from_feed {
@@ -99,14 +99,14 @@ sub from_feed {
         twig        => $media_group,
         title       => $media_group->field('media:title'),
         description => $media_group->field('media:description'),
-        content     => Net::Google::Photos::Media::Content->new(
+        content     => Net::Google::PicasaWeb::Media::Content->new(
             url       => $content->att('url'),
             mime_type => $content->att('type'),
             medium    => $content->att('medium'),
         ),
         thumbnails  => [
             map { 
-                Net::Google::Photos::Media::Thumbnail->new(
+                Net::Google::PicasaWeb::Media::Thumbnail->new(
                     url    => $_->att('url'),
                     width  => $_->att('width'),
                     height => $_->att('height'),
@@ -145,7 +145,7 @@ sub _fetch {
     }
 }
 
-package Net::Google::Photos::Media::Content;
+package Net::Google::PicasaWeb::Media::Content;
 use Moose;
 
 =head1 MEDIA CONTENT
@@ -199,7 +199,7 @@ has medium => (
     isa => 'Str',
 );
 
-package Net::Google::Photos::Media::Thumbnail;
+package Net::Google::PicasaWeb::Media::Thumbnail;
 use Moose;
 
 =head1 THUMBNAILS

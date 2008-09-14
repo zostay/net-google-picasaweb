@@ -3,7 +3,7 @@
 use Test::More tests => 1;
 
 BEGIN {
-	use_ok( 'Net::Google::Photos' );
+	use_ok( 'Net::Google::PicasaWeb' );
 }
 
-diag( "Testing Net::Google::Photos $Net::Google::Photos::VERSION, Perl $], $^X" );
+diag( "Testing Net::Google::PicasaWeb $Net::Google::PicasaWeb::VERSION, Perl $], $^X" );

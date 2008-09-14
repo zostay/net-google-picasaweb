@@ -1,16 +1,16 @@
 use strict;
 use warnings;
 
-package Net::Google::Photos::Base;
+package Net::Google::PicasaWeb::Base;
 use Moose;
 
 =head1 NAME
 
-Net::Google::Photos::Base - base class
+Net::Google::PicasaWeb::Base - base class
 
 =head1 DESCRIPTION
 
-This defines some common tools available to many of the classes included with L<Net::Google::Photos>.
+This defines some common tools available to many of the classes included with L<Net::Google::PicasaWeb>.
 
 =head1 ATTRIBUTES
 
@@ -18,13 +18,13 @@ These are common attributes shared by subclasses.
 
 =head2 service
 
-This is a link back to the parent L<Net::Google::Photos> class responsible for communicating with the Picasa Web API.
+This is a link back to the parent L<Net::Google::PicasaWeb> class responsible for communicating with the Picasa Web API.
 
 =cut
 
 has service => (
     is => 'rw',
-    isa => 'Net::Google::Photos',
+    isa => 'Net::Google::PicasaWeb',
     required => 1,
     weaken => 1,
 );

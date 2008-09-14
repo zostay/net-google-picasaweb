@@ -1,14 +1,14 @@
 use strict;
 use warnings;
 
-package Net::Google::Photos::MediaEntry;
+package Net::Google::PicasaWeb::MediaEntry;
 use Moose;
 
-extends 'Net::Google::Photos::Feed';
+extends 'Net::Google::PicasaWeb::Feed';
 
 =head1 NAME
 
-Net::Google::Photos::MediaEntry - represents a single Picasa Web photo or video
+Net::Google::PicasaWeb::MediaEntry - represents a single Picasa Web photo or video
 
 =head1 SYNOPSIS
 
@@ -45,7 +45,7 @@ This is the URL to get to the author's public albums on Picasa Web.
 
 =head2 photo
 
-This is a link to the L<Net::Google::Photos::Media> object that is used to reference the photo itself and its thumbnails.
+This is a link to the L<Net::Google::PicasaWeb::Media> object that is used to reference the photo itself and its thumbnails.
 
 =head1 AUTHOR
 

@@ -1,7 +1,7 @@
 use warnings;
 use strict;
 
-package Net::Google::Photos;
+package Net::Google::PicasaWeb;
 use Moose;
 
 use Carp;
@@ -11,13 +11,13 @@ use Net::Google::AuthSub;
 use URI;
 use XML::Twig;
 
-use Net::Google::Photos::Album;
-use Net::Google::Photos::Comment;
-use Net::Google::Photos::MediaEntry;
+use Net::Google::PicasaWeb::Album;
+use Net::Google::PicasaWeb::Comment;
+use Net::Google::PicasaWeb::MediaEntry;
 
 =head1 NAME
 
-Net::Google::Photos - use Google's Photos API (Picasa Web)
+Net::Google::PicasaWeb - use Google's Picasa Web API
 
 =head1 VERSION
 
@@ -29,18 +29,18 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-  use Net::Google::Photos;
+  use Net::Google::PicasaWeb;
 
-  my $service = Net::Google::Photos->new;
+  my $service = Net::Google::PicasaWeb->new;
 
   # Login via one of these
   $service->login('jondoe@gmail.com', 'north23AZ');
 
-  # Working with albums (see Net::Google::Photos::Album)
+  # Working with albums (see Net::Google::PicasaWeb::Album)
   my @albums = $service->list_albums( user_id => 'jondoe');
   $album->title('Quick Trip To Italy');
 
-  # Listing photos (see Net::Google::Photos::MediaEntry)
+  # Listing photos (see Net::Google::PicasaWeb::MediaEntry)
   my @photos      = $album->list_media_entries; 
   my @recent      = $album->list_media_entries( max_results => 10 );
   my @puppies     = $album->list_media_entries( q => 'puppies' );
@@ -54,7 +54,7 @@ our $VERSION = '0.01';
   my @album_tags = $album->list_tags;
   my @photo_tags = $photo->list_tags;
 
-  # Listing comments (see Net::Google::Photos::Comment)
+  # Listing comments (see Net::Google::PicasaWeb::Comment)
   my @recent         = $service->list_comments( user_id => 'jondoe', max_results => 10 );
   my @photo_comments = $photo->list_comments;
 
@@ -64,7 +64,7 @@ This module uses L<Moose> to handle attributes and such. These attributes are re
 
 =head2 authenticator
 
-This is an L<Net::Google::AuthSub> object used to handle authentication. The default is an instance set to use a service of "lh2" and a source of "Net::Google::Photos-VERSION".
+This is an L<Net::Google::AuthSub> object used to handle authentication. The default is an instance set to use a service of "lh2" and a source of "Net::Google::PicasaWeb-VERSION".
 
 =cut
 
@@ -74,7 +74,7 @@ has authenticator => (
     default => sub {
         Net::Google::AuthSub->new(
             service => 'lh2', # Picasa Web Albums
-            source  => 'Net::Google::Photos-'.$VERSION,
+            source  => 'Net::Google::PicasaWeb-'.$VERSION,
         );
     },
 );
@@ -99,7 +99,7 @@ has user_agent => (
 
 =head2 new
 
-  my $service = Net::Google::Photos->new(%params);
+  my $service = Net::Google::PicasaWeb->new(%params);
 
 See the L</ATTRIBUTES> section for a list of possible parameters.
 
@@ -151,7 +151,7 @@ sub list_albums {
 
     my $user_id = delete $params{user_id} || 'default';
     return $self->list_entries(
-        'Net::Google::Photos::Album',
+        'Net::Google::PicasaWeb::Album',
         [ 'user', $user_id ],
         %params
     );
@@ -177,7 +177,7 @@ This method also takes all the L</STANDARD LIST OPTIONS>.
 
 # This is a tiny cheat that allows us to reuse the list_entries method
 {
-    package Net::Google::Photos::Tag;
+    package Net::Google::PicasaWeb::Tag;
 
     sub new {
         my $class = shift;
@@ -196,7 +196,7 @@ sub list_tags {
 
     my $user_id = delete $params{user_id} || 'default';
     return $self->list_entries(
-        Net::Google::Photos::Tag->new,
+        Net::Google::PicasaWeb::Tag->new,
         [ 'user', $user_id ],
         %params
     );
@@ -226,7 +226,7 @@ sub list_comments {
 
     my $user_id = delete $params{user_id} || 'default';
     return $self->list_entries(
-        'Net::Google::Photos::Comment',
+        'Net::Google::PicasaWeb::Comment',
         [ 'user', $user_id ],
         %params
     );
@@ -356,14 +356,14 @@ Andrew Sterling Hanenkamp, C<< <hanenkamp at cpan.org> >>
 =head1 BUGS
 
 Please report any bugs or feature requests to C<bug-net-google-photos at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Net-Google-Photos>.  I will be notified, and then you'll
+the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Net-Google-PicasaWeb>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Net::Google::Photos
+    perldoc Net::Google::PicasaWeb
 
 You can also look for information at:
 
@@ -371,19 +371,19 @@ You can also look for information at:
 
 =item * RT: CPAN's request tracker
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Net-Google-Photos>
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Net-Google-PicasaWeb>
 
 =item * AnnoCPAN: Annotated CPAN documentation
 
-L<http://annocpan.org/dist/Net-Google-Photos>
+L<http://annocpan.org/dist/Net-Google-PicasaWeb>
 
 =item * CPAN Ratings
 
-L<http://cpanratings.perl.org/d/Net-Google-Photos>
+L<http://cpanratings.perl.org/d/Net-Google-PicasaWeb>
 
 =item * Search CPAN
 
-L<http://search.cpan.org/dist/Net-Google-Photos>
+L<http://search.cpan.org/dist/Net-Google-PicasaWeb>
 
 =back
 
@@ -401,4 +401,4 @@ under the same terms as Perl itself.
 
 =cut
 
-1; # End of Net::Google::Photos
+1; # End of Net::Google::PicasaWeb

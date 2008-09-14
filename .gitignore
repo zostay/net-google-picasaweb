@@ -6,5 +6,5 @@ _build*
 pm_to_blib*
 *.tar.gz
 .lwpcookies
-Net-Google-Photos-*
+Net-Google-PicasaWeb-*
 cover_db

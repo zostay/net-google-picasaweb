@@ -1,14 +1,14 @@
 use strict;
 use warnings;
 
-package Net::Google::Photos::Feed;
+package Net::Google::PicasaWeb::Feed;
 use Moose;
 
-extends 'Net::Google::Photos::Base';
+extends 'Net::Google::PicasaWeb::Base';
 
 =head1 NAME
 
-Net::Google::Photos::Feed - base class for feed entries
+Net::Google::PicasaWeb::Feed - base class for feed entries
 
 =head1 DESCRIPTION
 
@@ -53,7 +53,7 @@ has user_id => (
 
 has photo => (
     is => 'rw',
-    isa => 'Net::Google::Photos::Media',
+    isa => 'Net::Google::PicasaWeb::Media',
 );
 
 sub from_feed {
@@ -79,7 +79,7 @@ sub from_feed {
     my $self = $class->new(\%params);
 
     if ($entry->has_child('media:group')) {
-        my $media = Net::Google::Photos::Media->from_feed(
+        my $media = Net::Google::PicasaWeb::Media->from_feed(
             $self->service, $entry->first_child('media:group')
         );
         $self->photo($media);

@@ -2,7 +2,7 @@ Changes
 MANIFEST
 Makefile.PL
 README
-lib/Net/Google/Photos.pm
+lib/Net/Google/PicasaWeb.pm
 t/00-load.t
 t/pod-coverage.t
 t/pod.t

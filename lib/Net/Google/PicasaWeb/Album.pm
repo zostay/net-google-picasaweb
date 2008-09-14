@@ -1,16 +1,16 @@
 use strict;
 use warnings;
 
-package Net::Google::Photos::Album;
+package Net::Google::PicasaWeb::Album;
 use Moose;
 
-extends 'Net::Google::Photos::Feed';
+extends 'Net::Google::PicasaWeb::Feed';
 
-use Net::Google::Photos::Media;
+use Net::Google::PicasaWeb::Media;
 
 =head1 NAME
 
-Net::Google::Photos::Album - represents a single Picasa Web photo album
+Net::Google::PicasaWeb::Album - represents a single Picasa Web photo album
 
 =head1 SYNOPSIS
 
@@ -47,7 +47,7 @@ This is the URL to get to the author's public albums on Picasa Web.
 
 =head2 photo
 
-This is a link to the L<Net::Google::Photos::Media> object that is used to reference the cover photo and thumbnails of it.
+This is a link to the L<Net::Google::PicasaWeb::Media> object that is used to reference the cover photo and thumbnails of it.
 
 =head1 METHODS
 
@@ -57,7 +57,7 @@ This is a link to the L<Net::Google::Photos::Media> object that is used to refer
 
 Lists photos and video entries in the album. Options may be used to modify the photos returned.
 
-This method takes the L<Net::Google::Photos/STANDARD LIST OPTIONS>.
+This method takes the L<Net::Google::PicasaWeb/STANDARD LIST OPTIONS>.
 
 =back
 
@@ -68,7 +68,7 @@ sub list_media_entries {
     $params{kind} = 'photo';
 
     return $self->service->list_entries(
-        'Net::Google::Photos::MediaEntry',
+        'Net::Google::PicasaWeb::MediaEntry',
         [ 'user', $self->user_id, 'albumid', $self->entry_id ],
         %params,
     );
