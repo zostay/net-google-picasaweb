@@ -4,7 +4,7 @@ use warnings;
 package Net::Google::PicasaWeb::Album;
 use Moose;
 
-extends 'Net::Google::PicasaWeb::Feed';
+extends 'Net::Google::PicasaWeb::MediaFeed';
 
 use Net::Google::PicasaWeb::Media;
 

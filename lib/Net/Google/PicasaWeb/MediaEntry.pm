@@ -4,7 +4,7 @@ use warnings;
 package Net::Google::PicasaWeb::MediaEntry;
 use Moose;
 
-extends 'Net::Google::PicasaWeb::Feed';
+extends 'Net::Google::PicasaWeb::MediaFeed';
 
 =head1 NAME
 

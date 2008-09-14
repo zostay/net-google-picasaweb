@@ -12,7 +12,7 @@ Net::Google::PicasaWeb::Feed - base class for feed entries
 
 =head1 DESCRIPTION
 
-Provides some common functions for feed-based photos objects.
+Provides some common functions for feed-based objects.
 
 =cut
 
@@ -51,11 +51,6 @@ has user_id => (
     isa => 'Str',
 );
 
-has photo => (
-    is => 'rw',
-    isa => 'Net::Google::PicasaWeb::Media',
-);
-
 sub from_feed {
     my ($class, $service, $entry) = @_;
 
@@ -76,16 +71,7 @@ sub from_feed {
             if $entry->has_child('uri');
     }
 
-    my $self = $class->new(\%params);
-
-    if ($entry->has_child('media:group')) {
-        my $media = Net::Google::PicasaWeb::Media->from_feed(
-            $self->service, $entry->first_child('media:group')
-        );
-        $self->photo($media);
-    }
-
-    return $self;
+    return $class->new(\%params);
 }
 
 =head1 AUTHOR
