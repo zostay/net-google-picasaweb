@@ -6,7 +6,10 @@ author   'Andrew Sterling Hanenkamp <hanenkamp@cpan.org>';
 
 build_requires 'Test::More';
 
+requires 'LWP::UserAgent';
 requires 'Net::Google::AuthSub';
+requires 'URI';
+requires 'XML::Atom';
 
 auto_install;
 
