@@ -53,13 +53,17 @@ This is a link to the L<Net::Google::PicasaWeb::Media> object that is used to re
 
 =head2 list_media_entries
 
+=head2 list_photos
+
+=head2 list_videos
+
   my @photos = $album->list_media_entries(%params);
 
 Lists photos and video entries in the album. Options may be used to modify the photos returned.
 
 This method takes the L<Net::Google::PicasaWeb/STANDARD LIST OPTIONS>.
 
-=back
+The L</list_photos> and L</list_videos> methods are synonyms for L</list_media_entries>.
 
 =cut
 
@@ -71,6 +75,29 @@ sub list_media_entries {
         'Net::Google::PicasaWeb::MediaEntry',
         [ 'user', $self->user_id, 'albumid', $self->entry_id ],
         %params,
+    );
+}
+
+*list_photos = *list_media_entries;
+*list_videos = *list_media_entries;
+
+=head2 list_tags
+
+Lists tags used in the albums.
+
+This method takes the L<Net::Google::PicasaWeb/STANDARD LIST OPTIONS>.
+
+=cut
+
+sub list_tags {
+    my ($self, %params) = @_;
+    $params{kind} = 'tag';
+
+    my $user_id = delete $params{user_id} || 'default';
+    return $self->list_entries(
+        'Net::Google::PicasaWeb::Tag',
+        [ 'user', $self->user_id, 'albumid', $self->entry_id ],
+        %params
     );
 }
 

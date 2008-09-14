@@ -47,6 +47,76 @@ This is the URL to get to the author's public albums on Picasa Web.
 
 This is a link to the L<Net::Google::PicasaWeb::Media> object that is used to reference the photo itself and its thumbnails.
 
+=head2 album_id
+
+This is the ID of the album that the photo belongs to.
+
+=cut
+
+has album_id => (
+    is => 'rw',
+    isa => 'Str',
+);
+
+=head1 METHODS
+
+=cut
+
+override from_feed => sub {
+    my ($class, $service, $entry) = @_;
+    my $self = $class->super($service, $entry);
+
+    $self->album_id($entry->field('gphoto:album_id'));
+    return $self;
+};
+
+=head2 list_tags
+
+Lists tags used in the albums.
+
+This method takes the L<Net::Google::PicasaWeb/STANDARD LIST OPTIONS>.
+
+=cut
+
+sub _feed_path {
+    my $self = shift;
+    return [ 
+        user    => $self->user_id, 
+        albumid => $self->album_id, 
+        photoid => $self->entry_id,
+    ]
+}
+
+sub list_tags {
+    my ($self, %params) = @_;
+    $params{kind} = 'tag';
+
+    return $self->list_entries(
+        'Net::Google::PicasaWeb::Tag',
+        $self->_feed_path,
+        %params
+    );
+}
+
+=head2 list_comments
+
+Lists comments used in the albums.
+
+This method takes the L<Net::Google::PicasaWeb/STANDARD LIST OPTIONS>.
+
+=cut
+
+sub list_comments {
+    my ($self, %params) = @_;
+    $params{kind} = 'comment';
+
+    return $self->list_entries(
+        'Net::Google::PicasaWeb::Comment',
+        $self->_feed_path,
+        %params
+    );
+}
+
 =head1 AUTHOR
 
 Andrew Sterling Hanenkamp, C<< <hanenkamp at cpan.org> >>

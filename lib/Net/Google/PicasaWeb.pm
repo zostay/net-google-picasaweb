@@ -179,11 +179,6 @@ This method also takes all the L</STANDARD LIST OPTIONS>.
 {
     package Net::Google::PicasaWeb::Tag;
 
-    sub new {
-        my $class = shift;
-        return bless {}, $class;
-    }
-
     sub from_feed {
         my ($class, $service, $entry) = @_;
         return $entry->field('title');
@@ -196,7 +191,7 @@ sub list_tags {
 
     my $user_id = delete $params{user_id} || 'default';
     return $self->list_entries(
-        Net::Google::PicasaWeb::Tag->new,
+        'Net::Google::PicasaWeb::Tag',
         [ 'user', $user_id ],
         %params
     );
@@ -242,6 +237,48 @@ sub _feed_url {
 
     return $uri;
 }
+
+=head2 list_media_entries
+
+=head2 list_photos
+
+=head2 list_videos
+
+Returns photos and videos based on the query options given. If a C<user_id> option is set, the photos returned will be those related to the named user ID. Without a user ID, the photos will be pulled from the general community feed.
+
+It accepts the following parameters:
+
+=over
+
+=item user_id
+
+If given, the photos will be limited to those owned by this user. If it is set to "default", then the authenticated user will be used. If no C<user_id> is set, then the community feed will be used rather than a specific user.
+
+=back
+
+This method also accepts the L</STANDARD LIST OPTIONS>.
+
+The L</list_photos> and L</list_videos> methods are synonyms for L</list_media_entries>.
+
+=cut
+
+sub list_media_entries {
+    my ($self, %params) = @_;
+    $params{kind} = 'photo';
+
+    my $user_id = delete $params{user_id};
+    my $path   = [ 'user', $user_id ] if $user_id;
+       $path ||= 'all';
+
+    return $self->list_entries(
+        'Net::Google::PicasaWeb::MediaEntry',
+        $path,
+        %params
+    );
+}
+
+*list_photos = *list_media_entries;
+*list_videos = *list_media_entries;
 
 sub request {
     my $self    = shift;
