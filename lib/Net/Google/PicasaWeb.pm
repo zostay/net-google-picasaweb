@@ -230,7 +230,7 @@ sub list_comments {
 sub _feed_url {
     my ($self, $path, $query) = @_;
 
-    $path = join '/', @$path if $path;
+    $path = join '/', @$path if ref $path;
 
     my $uri = URI->new('http://picasaweb.google.com/data/feed/api/' . $path);
     $uri->query_form($query) if $query;
