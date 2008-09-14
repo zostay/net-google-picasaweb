@@ -1,8 +1,9 @@
 use strict;
 use warnings;
 
-use Test::More tests => 15;
+use Test::More tests => 19;
 use Test::Mock::LWP;
+use URI;
 
 use_ok('Net::Google::PicasaWeb');
 
@@ -18,7 +19,16 @@ my $service = Net::Google::PicasaWeb->new;
     $Mock_response->set_always( content => do { local $/; <$fh> } );
 }
 
+#$Mock_ua->mock( request => sub {
+#    my ($self, $request);
+#    is($request->url, 
+#    is($request->method, 'GET', 'method is GET');
+#    return $Mock_response;
+#});
+
 my @albums = $service->list_albums;
+is($Mock_request->{new_args}[1], 'GET', 'method is GET');
+is($Mock_request->{new_args}[2], 'http://picasaweb.google.com/data/feed/api/user/default?kind=album', 'URL is user/default');
 is(scalar @albums, 1, 'found 1 albums');
 
 my $album = $albums[0];
@@ -43,3 +53,7 @@ my $thumbnail = $thumbnails[0];
 is($thumbnail->url, 'http://lh5.ggpht.com/liz/SI4jmlkNUFE/AAAAAAAAAzU/J1V3PUhHEoI/s160-c/Lolcats.jpg', 'photo thumbnail URL is correct');
 is($thumbnail->height, 160, 'photo thumbnail height is 160');
 is($thumbnail->width, 160, 'photo thumbnail width is 160');
+
+$service->list_albums( user_id => 'foobar', q => 'blah' );
+is($Mock_request->{new_args}[1], 'GET', 'method is GET');
+ok(URI::eq($Mock_request->{new_args}[2], 'http://picasaweb.google.com/data/feed/api/user/foobar?kind=album&q=blah'), 'URL is user/foobar');
