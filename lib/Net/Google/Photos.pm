@@ -37,18 +37,7 @@ our $VERSION = '0.01';
 
   # Working with albums (see Net::Google::Photos::Album)
   my @albums = $service->list_albums( user_id => 'jondoe');
-  my $album = $service->add_album(
-      title              => 'Trip To Italy',
-      summary            => 'This was the recent trip I took to Italy.'
-      location           => 'Italy',
-      access             => 'public',
-      commenting_enabled => 1,
-      timestamp          => DateTime->new( year => 2008, month => 6, day => 12 ),
-      keywords           => [ qw( italy vacation ) ],
-  );
   $album->title('Quick Trip To Italy');
-  $album->save;
-  $album->delete;
 
   # Listing photos (see Net::Google::Photos::MediaEntry)
   my @photos      = $album->list_media_entries; 
@@ -56,43 +45,17 @@ our $VERSION = '0.01';
   my @puppies     = $album->list_media_entries( q => 'puppies' );
   my @all_puppies = $service->list_media_entries( q => 'puppies' );
 
-  # Adding photos (or video)
-  my $photo = $album->add_media_entry(
-      title     => 'plz-to-love-realcat.jpg',
-      summary   => 'Real cat wants attention too.',
-      mime_type => 'image/jpeg',
-
-      # as a filename
-      file      => '/path/to/plz-to-love-realcat.jpg',
-      
-      # or as an IO handle
-      handle    => $plz_to_love_realcat_fh,
-
-      # or as a scalar
-      photo     => $plz_to_love_realcat_data,
-  );
-
   # Updating/Deleting photos (or video)
   $photo->title('Plz to love RealCat');
-  $photo->save;
-  $photo->delete;
 
   # Listing tags
   my @user_tags  = $service->list_tags( user_id => 'jondoe' );
   my @album_tags = $album->list_tags;
   my @photo_tags = $photo->list_tags;
 
-  # Add tags to/delete tags from a photo
-  $photo->add_tag('awesome');
-  $photo->delete_tag('awesome');
-
   # Listing comments (see Net::Google::Photos::Comment)
   my @recent         = $service->list_comments( user_id => 'jondoe', max_results => 10 );
   my @photo_comments = $photo->list_comments;
-
-  # Add/delete comments
-  my $comment = $photo->add_comment( content => 'great photo!' );
-  $comment->delete;
 
 =head1 ATTRIBUTES
 
@@ -225,8 +188,6 @@ sub list_albums {
 }
 
 =back
-
-=head2 add_album
 
 =head2 list_tags
 
