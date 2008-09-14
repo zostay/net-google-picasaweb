@@ -5,8 +5,13 @@ package Net::Google::Photos;
 use Moose;
 
 use Carp;
+use HTTP::Request::Common;
 use LWP::UserAgent;
 use Net::Google::AuthSub;
+use URI;
+use XML::Atom::Feed;
+
+use Net::Google::Photos::Album;
 
 =head1 NAME
 
@@ -208,8 +213,24 @@ This may be set to the name of a geo location to search for albums within. For e
 =cut
 
 sub list_albums {
-    ### YOU ARE HERE
+    my ($self, %params) = @_;
+
+    my $user_id = delete $params{user_id} || 'default';
+
+    my $response = $self->_request(
+        GET => [ 'user', $user_id ] => [ %params ]
+    );
+
+    if ($response->is_error) {
+        croak $response->status_line;
+    }
+
+    my $content = $response->content;
+    my $feed = XML::Atom::Feed->new(\$content);
+
+    return map { Net::Google::Photos::Album->from_feed($self, $_) } $feed->entries;
 }
+
 
 =back
 
@@ -218,6 +239,43 @@ sub list_albums {
 =head2 list_tags
 
 =head2 list_comments
+
+=cut
+
+sub _feed_url {
+    my ($self, $path, $query) = @_;
+
+    $path = join '/', @$path if $path;
+
+    my $uri = URI->new('http://picasaweb.google.com/data/feed/api/' . $path);
+    $uri->query_form($query) if $query;
+
+    return $uri;
+}
+
+sub _request {
+    my $self    = shift;
+    my $method  = shift;
+    my $path    = shift;
+    my $query   = $method eq 'GET' ? shift : undef;
+    my $content = shift;
+
+    my @headers = $self->authenticator->auth_params;
+
+    my $url = $self->_feed_url($path, $query);
+    
+    my $request;
+    {
+        local $_ = $method;
+        if    (/GET/)    { $request = GET   ($url, @headers) }
+        elsif (/POST/)   { $request = POST  ($url, @headers, Content => $content) }
+        elsif (/PUT/)    { $request = PUT   ($url, @headers, Content => $content) }
+        elsif (/DELETE/) { $request = DELETE($url, @headers) }
+        else             { confess "unkonwn method [$_]" }
+    }
+
+    return $self->user_agent->request($request);
+}
 
 =head1 AUTHOR
 
