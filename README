@@ -1,5 +1,9 @@
 Net-Google-PicasaWeb
 
+I am in no affiliated with Google other than as a user of Google products. I've
+written this software for my own use and am sharing it in case someone else
+might find it useful.
+
 It is my hope that this module will implement a full range of features for the
 Google Picasa Web API. As of this writing, it implements most (if not all) of
 the listing interface, which allows you to search for albums, photos, tags, and
