@@ -3,5 +3,5 @@
 .*.swp
 cover_db
 blib
-Makefile
 MANIFEST.bak
+Net-Google-PicasaWeb-*

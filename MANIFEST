@@ -6,6 +6,7 @@ inc/Module/Install/Base.pm
 inc/Module/Install/Can.pm
 inc/Module/Install/Fetch.pm
 inc/Module/Install/Include.pm
+inc/Module/Install/Makefile.pm
 inc/Module/Install/Metadata.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
@@ -17,6 +18,7 @@ lib/Net/Google/PicasaWeb/Feed.pm
 lib/Net/Google/PicasaWeb/Media.pm
 lib/Net/Google/PicasaWeb/MediaEntry.pm
 lib/Net/Google/PicasaWeb/MediaFeed.pm
+Makefile.PL
 MANIFEST
 MANIFEST.SKIP
 META.yml
