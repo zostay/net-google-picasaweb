@@ -60,7 +60,7 @@ else {
 
 sub to_filename {
     local $_ = shift;
-    s/[\W\._-]+/-/g;
+    s/[^\w\._-]+/-/g;
     s/^-+//;
     s/-+$//;
     return $_;
