@@ -6,6 +6,8 @@ use Moose;
 
 extends 'Net::Google::PicasaWeb::Base';
 
+use Carp;
+
 =head1 NAME
 
 Net::Google::PicasaWeb::Media - hold information about a photo or video
