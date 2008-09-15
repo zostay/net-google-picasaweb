@@ -12,6 +12,8 @@ requires 'Net::Google::AuthSub';
 requires 'URI';
 requires 'XML::Twig';
 
+install_script 'script/picasa-get';
+
 auto_install;
 
 WriteAll;
