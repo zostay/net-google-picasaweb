@@ -21,6 +21,7 @@ MANIFEST
 MANIFEST.SKIP
 META.yml
 README
+script/picasa-get
 t/00-load.t
 t/01-login.t
 t/02-list_albums.t
