@@ -1,0 +1,199 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use Getopt::Long;
+use Net::Google::PicasaWeb;
+
+my ($help, $man);
+my ($username, $password);
+my $kind    = 'album';
+my $user_id;
+my %options;
+my ($dry_run, $quiet);
+
+GetOptions(
+    'username=s' => \$username,
+    'password=s' => \$password,
+    'kind=s'     => \$kind,
+    'userid=s'   => \$user_id,
+    'option=s%'  => \%options,
+
+    'dry-run'    => \$dry_run,
+    'quiet'      => \$quiet,
+
+    help         => \$help,
+    man          => \$man,
+) || pod2usage(-verbose => 0);
+
+pod2usage(-verbose => 1) if $help;
+pod2usage(-verbose => 2) if $man;
+
+pod2usage("$0: The --kind option must be set to either album or photo")
+    unless $kind eq 'album' or $kind eq 'photo';
+
+pod2usage("$0: You must give both --username and --password or neither of them")
+    if defined $username xor defined $password;
+
+pod2usage("$0: A --dry-run with --quiet is not useful. Quitting.")
+    if $dry_run and $quiet;
+
+my $service = Net::Google::PicasaWeb->new;
+
+if ($username) {
+    $service->login($username, $password);
+}
+
+if ($kind eq 'album') {
+    $user_id ||= 'default';
+
+    $options{user_id} = $user_id;
+    my @albums = $service->list_albums(%options);
+    &download_albums(@albums);
+}
+
+else {
+    $options{user_id} = $user_id if defined $user_id;
+    my @photos = $service->list_photos(%options);
+    &download_albums(undef, @photos);
+}
+
+sub to_filename {
+    local $_ = shift;
+    s/[\W\._-]+/-/g;
+    s/^-+//;
+    s/-+$//;
+    return $_;
+}
+
+sub download_albums {
+    my @albums = @_;
+
+    for my $album (@albums) {
+        my $dir_name = to_filename($album->title);
+        die "$0: $dir_name exists, will not overwrite\n" 
+            if -e $dir_name;
+
+        print "Creating album directory $dir_name...\n"
+            unless $quiet;
+        mkdir $dir_name unless $dry_run;
+
+        &download_photos($dir_name, $album->list_media_entries);
+    }
+}
+
+sub download_photos {
+    my ($dir_name, @photos) = @_;
+
+    my $path_prefix = $dir_name ? "$dir_name/" : '';
+    for my $photo (@photos) {
+        my $file_name = $path_prefix . to_filename($photo->title);
+        die "$0: $file_name exists, will not overwrite\n"
+            if -e $file_name;
+
+        my $medium = $photo->photo->content->medium;
+        print "Saving $medium $file_name...\n"
+            unless $quiet;
+        $photo->photo->content->fetch( file => $file_name )
+            unless $dry_run;
+    }
+}
+
+__END__
+
+=head1 NAME
+
+picasa-get - fetch albums and photos from Google Picasa Web
+
+=head1 SYNOPSIS
+
+  picasa-get [options]
+
+  Options:
+    --username <username>    the username to login as
+    --password <password>    the password to login with
+    --kind <kind>            either "album" or "photo" (default: album)
+    --userid <userid>        the userid to look for albums or photos in 
+
+    --option <key>=<value>   special options: q, location, etc.
+
+    --dry-run                show what would be downloaded
+    --quiet                  suppress messages
+    
+    --help                   get some help
+    --man                    get lots of help
+
+=head1 DESCRIPTION
+
+This script will download photos from the Picasa Web site based upon a query you give. This will download all files into the current working directory. If albums are downloaded (the default unless B<--kind> is set to "photo"), subdirectories will be created for each album and the photos will be placed within those.
+
+=head1 OPTIONS
+
+=over
+
+=item B<--username>
+
+This is the Google username to use when logging in. This is generally a GMail address or another email address used to login to Google services.
+
+=item B<--password>
+
+This is the Google password to use when loggin in.
+
+=item B<--kind>
+
+This is the kind of information to pull. There are two possible settings:
+
+=over
+
+=item album
+
+This is the default. If albums are pulled, each album found will cause a directory to be created in the current working directory. Then, all the photos in the album will be placed in that directory.
+
+=item photo
+
+The matching photos will be pulled and saved into the current working directory.
+
+=back
+
+=item B<--userid>
+
+This is the Google user ID to use to pull from. 
+
+If B<--kind> is not given or is set to "album", then the default is to use the "default" user ID. This special identifier tells Google to pull for the currently authenticated user (which won't work if you're not authenticated, so specify B<--userid> if you don't specify B<--username>).
+
+If B<--kind> is set to "photo", then the default is not to set this at all, but to pull photos from the general picasa community. You may set this to "default" to user the logged username or a specific user ID.
+
+=item B<--option>
+
+This option allows you to specify arbitrary options on the Picasa Web query. To see a list of available options, check L<Net::Google::PicasaWeb/STANDARD LIST OPTIONS>.
+
+=item B<--dry-run>
+
+If given, no directories will be created and no files will be downloaded. The script will go through the process of describing what it would do if this option weren't set.
+
+=item B<--quiet>
+
+If given, the typical status output will be surpressed.
+
+=item B<--help>
+
+Show some of this help stuff.
+
+=item B<--man>
+
+Show lots of help.
+
+=back
+
+=head1 AUTHOR
+
+Andrew Sterling Hanenkamp, C<< <hanenkamp at cpan.org> >>
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2008 Andrew Sterling Hanenkamp, all rights reserved.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+=cut
