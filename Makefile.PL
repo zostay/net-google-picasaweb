@@ -10,7 +10,7 @@ build_requires 'Test::Mock::LWP';
 requires 'LWP::UserAgent';
 requires 'Net::Google::AuthSub';
 requires 'URI';
-requires 'XML::Twig';
+requires 'XML::Twig'             => '3.30'; # added fields method
 
 install_script 'script/picasa-get';
 
