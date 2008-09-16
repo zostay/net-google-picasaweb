@@ -1,5 +1,12 @@
 Revision history for Net-Google-PicasaWeb
 
+0.02    ???
+
+    * Added the --update option to picasa-get
+    * picasa-get will resume after skipping files
+    * XML::Twig 3.30 or greater is required for the field() method (thanks to
+      http://nntp.x.perl.org/group/perl.cpan.testers/2226804)
+
 0.01    September 14, 2008
 
     * Initial implementation of the Google Picasa Web API

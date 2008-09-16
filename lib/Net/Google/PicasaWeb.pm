@@ -445,8 +445,19 @@ L<http://search.cpan.org/dist/Net-Google-PicasaWeb>
 
 =head1 ACKNOWLEDGEMENTS
 
-Thanks to Simon Wistow for L<Net::Google::AuthSub>, which took care of all the
-authentication details.
+Thanks to:
+
+=over
+
+=item *
+
+Robert May for responding to email messages quickly and transfering ownership of the C<Net::Google::PicasaWeb> namespace and providing some sample code to examine.
+
+=item *
+
+Simon Wistow for L<Net::Google::AuthSub>, which took care of all the authentication details.
+
+=back
 
 =head1 COPYRIGHT & LICENSE
 
