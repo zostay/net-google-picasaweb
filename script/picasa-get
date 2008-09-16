@@ -10,6 +10,7 @@ my ($username, $password);
 my $kind    = 'album';
 my $user_id;
 my %options;
+my $update;
 my ($dry_run, $quiet);
 
 GetOptions(
@@ -18,6 +19,8 @@ GetOptions(
     'kind=s'     => \$kind,
     'userid=s'   => \$user_id,
     'option=s%'  => \%options,
+
+    'update'     => \$update,
 
     'dry-run'    => \$dry_run,
     'quiet'      => \$quiet,
@@ -69,14 +72,19 @@ sub to_filename {
 sub download_albums {
     my @albums = @_;
 
+    ALBUM:
     for my $album (@albums) {
         my $dir_name = to_filename($album->title);
-        die "$0: $dir_name exists, will not overwrite\n" 
-            if -e $dir_name;
+        if (-e $dir_name) {
+            warn "$0: $dir_name exists, will not overwrite\n";
+            next ALBUM unless $update;
+        }
 
-        print "Creating album directory $dir_name...\n"
-            unless $quiet;
-        mkdir $dir_name unless $dry_run;
+        else {
+            print "Creating album directory $dir_name...\n"
+                unless $quiet;
+            mkdir $dir_name unless $dry_run;
+        }
 
         &download_photos($dir_name, $album->list_media_entries);
     }
@@ -86,10 +94,14 @@ sub download_photos {
     my ($dir_name, @photos) = @_;
 
     my $path_prefix = $dir_name ? "$dir_name/" : '';
+
+    PHOTO:
     for my $photo (@photos) {
         my $file_name = $path_prefix . to_filename($photo->title);
-        die "$0: $file_name exists, will not overwrite\n"
-            if -e $file_name;
+        if (-e $file_name) {
+            warn "$0: $file_name exists, will not overwrite\n";
+            next PHOTO;
+        }
 
         my $medium = $photo->photo->content->medium;
         print "Saving $medium $file_name...\n"
@@ -116,6 +128,8 @@ picasa-get - fetch albums and photos from Google Picasa Web
     --userid <userid>        the userid to look for albums or photos in 
 
     --option <key>=<value>   special options: q, location, etc.
+
+    --update                 add files to existing directories
 
     --dry-run                show what would be downloaded
     --quiet                  suppress messages
@@ -166,6 +180,10 @@ If B<--kind> is set to "photo", then the default is not to set this at all, but 
 =item B<--option>
 
 This option allows you to specify arbitrary options on the Picasa Web query. To see a list of available options, check L<Net::Google::PicasaWeb/STANDARD LIST OPTIONS>.
+
+=item B<--update>
+
+Normally, if a directory matching the name of an album already exists, this utility will not enter that directory and write photos into it. If this option is given, it will go ahead and do so.
 
 =item B<--dry-run>
 
