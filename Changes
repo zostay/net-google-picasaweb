@@ -1,6 +1,6 @@
 Revision history for Net-Google-PicasaWeb
 
-0.02    ???
+0.02    September 16, 2008
 
     * Added the --update option to picasa-get
     * picasa-get will resume after skipping files
