@@ -8,6 +8,7 @@ build_requires 'Test::More';
 build_requires 'Test::Mock::LWP';
 
 requires 'LWP::UserAgent';
+requires 'Moose';
 requires 'Net::Google::AuthSub';
 requires 'URI';
 requires 'XML::Twig'             => '3.30'; # added fields method
