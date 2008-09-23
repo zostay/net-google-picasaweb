@@ -128,3 +128,107 @@ elsif ($kind eq 'comment') {
         map { [ $_->entry_id, $_->title, $_->content ] } @comments
     );
 }
+
+# Probably can't happen, but just in case
+else {
+    pod2usage(1);
+}
+
+__END__
+
+=head1 NAME
+
+picasa-list - list albums, photos, tags, or comments from Google Picasa Web
+
+=head1 SYNOPSIS
+
+  picasa-list [options]
+
+  Options:
+    --username <username>    the username to login as
+    --password <password>    the password to login with
+
+    --kind <kind>            "album", "photo", "tag", or "comment"
+    --user-id <user-id>      the user ID to look for albums or photos in 
+
+    --option <key>=<value>   special options: q, location, etc.
+
+    --quiet                  suppress messages
+    
+    --help                   get some help
+    --man                    get lots of help
+
+=head1 DESCRIPTION
+
+This script will list information about albums, photos, tags, or comments found to match the arguments given.
+
+=head1 OPTIONS
+
+=over
+
+=item B<--username>
+
+This is the Google username to use when logging in. This is generally a GMail address or another email address used to login to Google services.
+
+=item B<--password>
+
+This is the Google password to use when loggin in.
+
+=item B<--kind>
+
+This is the kind of information to pull. There are four possible settings:
+
+=over
+
+=item album
+
+This is the default. This will list all the albums matching the authenticated user or user ID given with the B<--user-id> option.
+
+=item photo
+
+This will list all the photos matching the authenticated user or user ID given with the B<--user-id> option.
+
+=item tag
+
+This will list all the tags matching the authenticated user or user ID given with the B<--user-id> option.
+
+=item comment
+
+This will list all the comments made on the authenticated user's account or the one given by B<--user-id>.
+
+=back
+
+=item B<--user-id>
+
+This is the Google user ID to list from. 
+
+=item B<--option>
+
+This option allows you to specify arbitrary options on the Picasa Web query. To see a list of available options, check L<Net::Google::PicasaWeb/STANDARD LIST OPTIONS>.
+
+=item B<--quiet>
+
+If given, the typical status output will be surpressed.
+
+=item B<--help>
+
+Show some of this help stuff.
+
+=item B<--man>
+
+Show lots of help.
+
+=back
+
+=head1 AUTHOR
+
+Andrew Sterling Hanenkamp, C<< <hanenkamp at cpan.org> >>
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2008 Andrew Sterling Hanenkamp
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+=cut
