@@ -1,0 +1,136 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use Getopt::Long;
+use List::Util qw/ max /;
+use Pod::Usage;
+use Net::Google::PicasaWeb;
+
+my ($help, $man);
+my ($username, $password);
+my $kind    = 'album';
+my $user_id;
+my %options;
+my $update;
+my ($dry_run, $quiet);
+
+GetOptions(
+    'username=s' => \$username,
+    'password=s' => \$password,
+
+    'kind=s'     => \$kind,
+    'user-id=s'  => \$user_id,
+
+    'option=s%'  => \%options,
+
+    'update'     => \$update,
+
+    'dry-run'    => \$dry_run,
+    'quiet'      => \$quiet,
+
+    help         => \$help,
+    man          => \$man,
+) || pod2usage(-verbose => 0);
+
+pod2usage(-verbose => 1) if $help;
+pod2usage(-verbose => 2) if $man;
+
+pod2usage("$0: The --kind option must be set to either album or photo")
+    unless $kind eq 'album' or $kind eq 'photo'
+        or $kind eq 'tag'   or $kind eq 'comment';
+
+pod2usage("$0: You must give both --username and --password or neither of them")
+    if defined $username xor defined $password;
+
+pod2usage("$0: A --dry-run with --quiet is not useful. Quitting.")
+    if $dry_run and $quiet;
+
+$options{user_id} = $user_id if $user_id;
+
+my $service = Net::Google::PicasaWeb->new;
+
+if ($username) {
+    $service->login($username, $password);
+}
+
+sub print_list {
+    my $type = shift;
+    unless (@_ > 1) {
+        print "No $type found.\n";
+        return;
+    }
+
+    my @longest;
+    for my $row (@_) {
+        for my $i (0 .. $#{ $row }) {
+            my @lines = split /\n/, $row->[$i];
+            $longest[$i] = max($longest[$i]||0, map { length } @lines);
+        }
+    }
+
+    my $format;
+    for my $length (@longest) {
+        $format .= '%-' . $length . 's ';
+    }
+    $format .= "\n";
+
+    my $first_row = shift;
+    printf $format, @{ $first_row };
+    printf $format, map { '-' x $_ } @longest;
+    for my $row (@_) {
+        my @extra_lines;
+        for my $i (0 .. $#{ $row }) {
+            my $col = $row->[$i];
+            if ($col =~ /\n/) {
+                my @lines = split /\n/, $col;
+                $row->[$i] = shift @lines;
+                $extra_lines[$i] = \@lines;
+            }
+        }
+
+        printf $format, @$row;
+        while (grep { defined $_ and @{ $_ } > 0 } @extra_lines) {
+            my @extra_row;
+            for my $i (0 .. $#longest) {
+                my $col = $extra_lines[$i];
+                if (defined $col and @$col > 0) {
+                    push @extra_row, shift @$col;
+                }
+                else {
+                    push @extra_row, ' ' x $longest[$i];
+                }
+            }
+            printf $format, @extra_row;
+        }
+    }
+}
+
+if ($kind eq 'album') {
+    my @albums = $service->list_albums(%options);
+    print_list( albums =>
+        [ 'ID', 'Name' ],
+        map { [ $_->entry_id, $_->title ] } @albums
+    );
+}
+
+elsif ($kind eq 'photo') {
+    my @photos = $service->list_media_entries(%options);
+    print_list( photos =>
+        [ 'ID', 'Name' ],
+        map { [ $_->entry_id, $_->title ] } @photos
+    );
+}
+
+elsif ($kind eq 'tag') {
+    my @tags = $service->list_tags(%options);
+    print_list( tags => [ 'Tag' ], map { [ $_ ] } @tags );
+}
+
+elsif ($kind eq 'comment') {
+    my @comments = $service->list_comments(%options);
+    print_list( comments =>
+        [ 'ID', 'By', 'Content' ],
+        map { [ $_->entry_id, $_->title, $_->content ] } @comments
+    );
+}
