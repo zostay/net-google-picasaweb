@@ -1,5 +1,10 @@
 Revision history for Net-Google-PicasaWeb
 
+0.03    ???
+
+    * Nudging the required Pod::Coverage version to 0.19
+    * Adding the missing import of Pod::Usage to picasa-get
+
 0.02    September 16, 2008
 
     * Added the --update option to picasa-get

@@ -3,6 +3,7 @@ use strict;
 use warnings;
 
 use Getopt::Long;
+use Pod::Usage;
 use Net::Google::PicasaWeb;
 
 my ($help, $man);
