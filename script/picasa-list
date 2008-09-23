@@ -12,8 +12,7 @@ my ($username, $password);
 my $kind    = 'album';
 my $user_id;
 my %options;
-my $update;
-my ($dry_run, $quiet);
+my $quiet;
 
 GetOptions(
     'username=s' => \$username,
@@ -24,9 +23,6 @@ GetOptions(
 
     'option=s%'  => \%options,
 
-    'update'     => \$update,
-
-    'dry-run'    => \$dry_run,
     'quiet'      => \$quiet,
 
     help         => \$help,
@@ -42,9 +38,6 @@ pod2usage("$0: The --kind option must be set to either album or photo")
 
 pod2usage("$0: You must give both --username and --password or neither of them")
     if defined $username xor defined $password;
-
-pod2usage("$0: A --dry-run with --quiet is not useful. Quitting.")
-    if $dry_run and $quiet;
 
 $options{user_id} = $user_id if $user_id;
 
@@ -106,6 +99,7 @@ sub print_list {
     }
 }
 
+$kind ||= 'album';
 if ($kind eq 'album') {
     my @albums = $service->list_albums(%options);
     print_list( albums =>
