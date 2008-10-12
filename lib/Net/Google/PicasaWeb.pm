@@ -121,8 +121,8 @@ sub login {
     my $self     = shift;
     my $response = $self->authenticator->login(@_);
 
-    croak "Error logging in: $@"                 unless defined $response;
-    croak "Error logging in: ", $response->error unless $response->is_success;
+    croak "error logging in: $@"                 unless defined $response;
+    croak "error logging in: ", $response->error unless $response->is_success;
 
     return 1;
 }
