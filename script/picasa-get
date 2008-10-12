@@ -135,6 +135,7 @@ picasa-get - fetch albums and photos from Google Picasa Web
 
     --kind <kind>            either "album" or "photo" (default: album)
     --user-id <user-id>      the user ID to look for albums or photos in 
+    --album-id <album-id>    the album ID to look for photos in
 
     --option <key>=<value>   special options: q, location, etc.
 
@@ -185,6 +186,10 @@ This is the Google user ID to use to pull from.
 If B<--kind> is not given or is set to "album", then the default is to use the "default" user ID. This special identifier tells Google to pull for the currently authenticated user (which won't work if you're not authenticated, so specify B<--user-id> if you don't specify B<--username>).
 
 If B<--kind> is set to "photo", then the default is not to set this at all, but to pull photos from the general picasa community. You may set this to "default" to user the logged username or a specific user ID.
+
+=item B<--album-id>
+
+This is the ID of the album to use when fetching photos.
 
 =item B<--option>
 
