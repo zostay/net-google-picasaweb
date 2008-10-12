@@ -63,7 +63,7 @@ if ($username) {
 sub print_list {
     my $type = shift;
     unless (@_ > 1) {
-        print "No $type found.\n";
+        print "No $type found.\n" unless $quiet;
         return;
     }
 
@@ -82,8 +82,10 @@ sub print_list {
     $format .= "\n";
 
     my $first_row = shift;
-    printf $format, @{ $first_row };
-    printf $format, map { '-' x $_ } @longest;
+    unless ($quiet) {
+        printf $format, @{ $first_row };
+        printf $format, map { '-' x $_ } @longest;
+    }
     for my $row (@_) {
         my @extra_lines;
         for my $i (0 .. $#{ $row }) {
