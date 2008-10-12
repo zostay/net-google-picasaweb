@@ -157,6 +157,35 @@ sub list_albums {
     );
 }
 
+=head2 get_album
+
+  my $album = $service->get_album(
+      user_id  => 'hanenkamp',
+      album_id => '5143195220258642177',
+  );
+
+This will fetch a single album from the Picasa Web Albums using the given C<user_id> and C<album_id>. If C<user_id> is omitted, then "default" will be used instead.
+
+This method returns C<undef> if no such album exists.
+
+=cut
+
+sub get_album {
+    my ($self, %params) = @_;
+    $params{kind} = 'album';
+
+    croak "missing album_id parameter" unless defined $params{album_id};
+
+    my $user_id  = delete $params{user_id} || 'default';
+    my $album_id = delete $params{album_id};
+
+    return $self->get_entry(
+        'Net::Google::PicasaWeb::Album',
+        [ 'user', $user_id, 'albumid', $album_id ],
+        %params
+    );
+}
+
 =head2 list_tags
 
 Returns a list of tags that have been used by the logged user or the user named in the C<user_id> parameter.
@@ -238,6 +267,46 @@ sub _feed_url {
     return $uri;
 }
 
+=head2 get_comment
+
+  my $comment = $service->get_comment(
+      user_id    => $user_id,
+      album_id   => $album_id,
+      photo_id   => $photo_id,
+      comment_id => $comment_id,
+  );
+
+Retrieves a single comment from Picasa Web via the given C<user_id>, C<album_id>, C<photo_id>, and C<comment_id>. If C<user_id> is not given, "default" will be used.
+
+Returns C<undef> if no matching comment is found.
+
+=cut
+
+sub get_comment {
+    my ($self, %params) = @_;
+    $params{kind} = 'comment';
+
+    croak "missing album_id parameter"   unless defined $params{album_id};
+    croak "missing photo_id parameter"   unless defined $params{photo_id};
+    croak "missing comment_id parameter" unless defined $params{comment_id};
+
+    my $user_id    = delete $params{user_id} || 'default';
+    my $album_id   = delete $params{album_id};
+    my $photo_id   = delete $params{photo_id};
+    my $comment_id = delete $params{comment_id};
+
+    return $self->get_entry(
+        'Net::Google::PicasaWeb::Comment',
+        [
+            user      => $user_id,
+            albumid   => $album_id,
+            photoid   => $photo_id,
+            commentid => $comment_id,
+        ],
+        %params
+    );
+}
+
 =head2 list_media_entries
 
 =head2 list_photos
@@ -280,6 +349,49 @@ sub list_media_entries {
 *list_photos = *list_media_entries;
 *list_videos = *list_media_entries;
 
+=head2 get_media_entry
+
+=head2 get_photo
+
+=head2 get_video
+
+  my $media_entry = $service->get_media_entry(
+      user_id  => $user_id,
+      album_id => $album_id,
+      photo_id => $photo_id,
+  );
+
+Returns a specific photo or video entry when given a C<user_id>, C<album_id>, and C<photo_id>. If C<user_id> is not given, "default" will be used.
+
+If no such photo or video can be found, C<undef> will be returned.
+
+=cut
+
+sub get_media_entry {
+    my ($self, %params) = @_;
+    $params{kind} = 'photo';
+
+    croak "missing album_id parameter" unless defined $params{album_id};
+    croak "missing photo_id parameter" unless defined $params{photo_id};
+
+    my $user_id  = delete $params{user_id} || 'default';
+    my $album_id = delete $params{album_id};
+    my $photo_id = delete $params{photo_id};
+
+    return $self->get_entry(
+        'Net::Google::PicasaWeb::MediaEntry',
+        [
+            user    => $user_id,
+            albumid => $album_id,
+            photoid => $photo_id,
+        ],
+        %params
+    );
+}
+
+*get_photo = *get_media_entry;
+*get_video = *get_media_entry;
+
 =head1 HELPERS
 
 These helper methods are used to do some of the work.
@@ -314,6 +426,20 @@ sub request {
     }
 
     return $self->user_agent->request($request);
+}
+
+=head2 get_entry
+
+  my $entry = $service->get_entry($class, $path, %params);
+
+This is used by the C<get_*> methods to pull and initialize a single object from Picasa Web.
+
+=cut
+
+sub get_entry {
+    my $self = shift;
+    my ($item) = $self->list_entries(@_);
+    return $item;
 }
 
 =head2 list_entries
