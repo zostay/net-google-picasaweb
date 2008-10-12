@@ -11,29 +11,32 @@ use Net::Google::PicasaWeb;
 my ($help, $man);
 my ($username, $password);
 my $kind    = 'album';
-my $user_id;
+my ($user_id, $album_id, $photo_id, $comment_id);
 my %options;
 my $quiet;
 
 GetOptions(
-    'username=s' => \$username,
-    'password=s' => \$password,
+    'username=s'   => \$username,
+    'password=s'   => \$password,
 
-    'kind=s'     => \$kind,
-    'user-id=s'  => \$user_id,
+    'kind=s'       => \$kind,
+    'user-id=s'    => \$user_id,
+    'album-id=s'   => \$album_id,
+    'photo-id=s'   => \$photo_id,
+    'comment-id=s' => \$comment_id,
 
-    'option=s%'  => \%options,
+    'option=s%'    => \%options,
 
-    'quiet'      => \$quiet,
+    'quiet'        => \$quiet,
 
-    help         => \$help,
-    man          => \$man,
+    help           => \$help,
+    man            => \$man,
 ) || pod2usage(-verbose => 0);
 
 pod2usage(-verbose => 1) if $help;
 pod2usage(-verbose => 2) if $man;
 
-pod2usage("$0: The --kind option must be set to either album or photo")
+pod2usage("$0: The --kind option must be set to one of: album, photo, tag, comment")
     unless $kind eq 'album' or $kind eq 'photo'
         or $kind eq 'tag'   or $kind eq 'comment';
 
@@ -101,17 +104,34 @@ sub print_list {
                     push @extra_row, shift @$col;
                 }
                 else {
-                    push @extra_row, ' ' x $longest[$i];
+                    push @extra_row, '';
                 }
             }
             printf $format, @extra_row;
         }
     }
+
+    unless ($quiet) {
+        printf $format, map { '-' x $_ } @longest;
+        my $count  = scalar @_;
+        local $_ = $type;
+        my ($things) = $count == 1 ? /(.*)s$/ : /(.*)$/;
+        print "Found $count $things.\n";
+    }
 }
 
-$kind ||= 'album';
 if ($kind eq 'album') {
-    my @albums = $service->list_albums(%options);
+    my @albums;
+    if (defined $album_id) {
+        @albums = $service->get_album(
+            user_id  => $user_id,
+            album_id => $album_id,
+        );
+    }
+    else {
+        @albums = $service->list_albums(%options);
+    }
+
     print_list( albums =>
         [ 'ID', 'Name' ],
         map { [ $_->entry_id, $_->title ] } @albums
@@ -119,7 +139,29 @@ if ($kind eq 'album') {
 }
 
 elsif ($kind eq 'photo') {
-    my @photos = $service->list_media_entries(%options);
+    my @photos;
+    if (defined $photo_id and defined $album_id) {
+        @photos = $service->get_media_entry(
+            user_id  => $user_id,
+            album_id => $album_id,
+            photo_id => $photo_id,
+        );
+    }
+    elsif (defined $photo_id) {
+        pod2usage("You must also use --album-id with --photo-id.\n");
+    }
+    elsif (defined $album_id) {
+        my $album = $service->get_album( 
+            user_id  => $user_id,
+            album_id => $album_id,
+        );
+        @photos = $album->list_media_entries(%options)
+            if defined $album;
+    }
+    else {
+        @photos = $service->list_media_entries(%options);
+    }
+
     print_list( photos =>
         [ 'ID', 'Name' ],
         map { [ $_->entry_id, $_->title ] } @photos
@@ -127,12 +169,82 @@ elsif ($kind eq 'photo') {
 }
 
 elsif ($kind eq 'tag') {
-    my @tags = $service->list_tags(%options);
+    my @tags;
+    if (defined $album_id and defined $photo_id) {
+        my $photo = $service->get_media_entry(
+            user_id  => $user_id,
+            album_id => $album_id,
+            photo_id => $photo_id,
+        );
+        @tags = $photo->list_tags(%options);
+    }
+    elsif (defined $album_id) {
+        my $album = $service->get_album(
+            user_id  => $user_id,
+            album_id => $album_id,
+        );
+        my @photos = $album->list_media_entries;
+        for my $photo (@photos) {
+            push @tags, $photo->list_tags(%options);
+        }
+    }
+    elsif (defined $photo_id) {
+        pod2usage("You must also use --album-id with --photo-id.\n");
+    }
+    else {
+        @tags = $service->list_tags(%options);
+    }
     print_list( tags => [ 'Tag' ], map { [ $_ ] } @tags );
 }
 
 elsif ($kind eq 'comment') {
-    my @comments = $service->list_comments(%options);
+    my @comments;
+    if (defined $album_id) {
+        if (defined $photo_id) {
+            if (defined $comment_id) {
+                @comments = $service->get_comment(
+                    user_id    => $user_id,
+                    album_id   => $album_id,
+                    photo_id   => $photo_id,
+                    comment_id => $comment_id,
+                );
+            }
+            else {
+                my $photo = $service->get_media_entry(
+                    user_id  => $user_id,
+                    album_id => $album_id,
+                    photo_id => $photo_id,
+                );
+                @comments = $photo->list_comments(%options);
+            }
+        }
+        else {
+            if (defined $comment_id) {
+                pod2usage("You must also use --photo-id with --comment-id.\n");
+            }
+            else {
+                my $album = $service->get_album(
+                    user_id  => $user_id,
+                    album_id => $album_id,
+                );
+                my @photos = $album->list_media_entries;
+                for my $photo (@photos) {
+                    push @comments, $photo->list_comments(%options);
+                }
+            }
+        }
+    }
+    else {
+        if (defined $photo_id) {
+            pod2usage("You must also use --album-id with --photo-id.\n");
+        }
+        elsif (defined $comment_id) {
+            pod2usage("You must also use --album_id and --photo-id with --comment-id.\n");
+        }
+        else {
+            @comments = $service->list_comments(%options);
+        }
+    }
     print_list( comments =>
         [ 'ID', 'By', 'Content' ],
         map { [ $_->entry_id, $_->title, $_->content ] } @comments
@@ -160,6 +272,8 @@ picasa-list - list albums, photos, tags, or comments from Google Picasa Web
 
     --kind <kind>            "album", "photo", "tag", or "comment"
     --user-id <user-id>      the user ID to look for albums or photos in 
+    --album-id <album-id>    album ID to look in for photos, comments, or tags
+    --photo-id <photo-id>    photo ID to look at for comments or tags
 
     --option <key>=<value>   special options: q, location, etc.
 
@@ -212,13 +326,21 @@ This will list all the comments made on the authenticated user's account or the 
 
 This is the Google user ID to list from. 
 
+=item B<--album-id>
+
+This is the ID of the album to use when listing photos, tags, or comments.
+
+=item B<--photo-id>
+
+This is the ID of the photo to use when listing tags or comments.
+
 =item B<--option>
 
 This option allows you to specify arbitrary options on the Picasa Web query. To see a list of available options, check L<Net::Google::PicasaWeb/STANDARD LIST OPTIONS>.
 
 =item B<--quiet>
 
-If given, the typical status output will be surpressed.
+Suppresses the headings and footer usually given and also doesn't print anything if no results are found.
 
 =item B<--help>
 
