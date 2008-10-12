@@ -449,8 +449,6 @@ sub _fetch_feed {
         croak $response->status_line;
     }
 
-    warn $response->as_string;
-
     return $response->content;
 }
 
