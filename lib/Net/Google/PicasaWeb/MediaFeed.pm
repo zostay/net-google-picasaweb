@@ -25,10 +25,12 @@ override from_feed => sub {
     my ($class, $service, $entry) = @_;
     my $self = $class->super($service, $entry);
 
-    my $media = Net::Google::PicasaWeb::Media->from_feed(
-        $self->service, $entry->first_child('media:group')
-    );
-    $self->photo($media);
+    if ($entry->has_child('media:group')) {
+        my $media = Net::Google::PicasaWeb::Media->from_feed(
+            $self->service, $entry->first_child('media:group')
+        );
+        $self->photo($media);
+    }
 
     return $self;
 };
