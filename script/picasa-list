@@ -3,6 +3,7 @@ use strict;
 use warnings;
 
 use Getopt::Long;
+use IO::Prompt;
 use List::Util qw/ max /;
 use Pod::Usage;
 use Net::Google::PicasaWeb;
@@ -36,8 +37,17 @@ pod2usage("$0: The --kind option must be set to either album or photo")
     unless $kind eq 'album' or $kind eq 'photo'
         or $kind eq 'tag'   or $kind eq 'comment';
 
-pod2usage("$0: You must give both --username and --password or neither of them")
-    if defined $username xor defined $password;
+pod2usage("$0: You cannot use --photo-id when --kind is album")
+    if $kind eq 'album' and defined $photo_id;
+
+if (defined $username and not $password) {
+    $password = prompt -echo => '', 'password: ';
+}
+
+pod2usage("$0: You must give both --username and if you give --password")
+    if defined $password and not defined $username;
+pod2usage("$0: You must enter a password if you give --username")
+    if defined $username and not defined $password;
 
 $options{user_id} = $user_id if $user_id;
 

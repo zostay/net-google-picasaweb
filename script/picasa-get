@@ -3,6 +3,7 @@ use strict;
 use warnings;
 
 use Getopt::Long;
+use IO::Prompt;
 use Pod::Usage;
 use Net::Google::PicasaWeb;
 
@@ -36,8 +37,14 @@ pod2usage(-verbose => 2) if $man;
 pod2usage("$0: The --kind option must be set to either album or photo")
     unless $kind eq 'album' or $kind eq 'photo';
 
-pod2usage("$0: You must give both --username and --password or neither of them")
-    if defined $username xor defined $password;
+if (defined $username and not $password) {
+    $password = prompt -echo '', 'password: ';
+}
+
+pod2usage("$0: You must give both --username and if you give --password")
+    if defined $password and not defined $username;
+pod2usage("$0: You must enter a password if you give --username")
+    if defined $username and not defined $password;
 
 pod2usage("$0: A --dry-run with --quiet is not useful. Quitting.")
     if $dry_run and $quiet;
