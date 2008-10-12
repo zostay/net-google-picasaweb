@@ -434,9 +434,44 @@ This is used by the C<get_*> methods to pull and initialize a single object from
 =cut
 
 sub get_entry {
-    my $self = shift;
-    my ($item) = $self->list_entries(@_);
-    return $item;
+    my ($self, $class, $path, %params) = @_;
+    my $content = $self->_fetch_feed($path, %params);
+    my @entries = $self->_parse_feed($class, 'feed', $content);
+    return scalar $entries[0];
+}
+
+sub _fetch_feed {
+    my ($self, $path, %params) = @_;
+
+    my $response = $self->request( GET => $path => [ %params ] );
+
+    if ($response->is_error) {
+        croak $response->status_line;
+    }
+
+    warn $response->as_string;
+
+    return $response->content;
+}
+
+sub _parse_feed {
+    my ($self, $class, $element, $content) = @_;
+
+    my @items;
+    my $feed = XML::Twig->new( 
+        map_xmlns => {
+            'http://search.yahoo.com/mrss/'         => 'media',
+            'http://schemas.google.com/photos/2007' => 'gphoto',
+        },
+        twig_handlers => {
+            $element => sub {
+                push @items, $class->from_feed($self, $_);
+            },
+        },
+    );
+    $feed->parse($content);
+
+    return @items;
 }
 
 =head2 list_entries
@@ -450,27 +485,8 @@ This is used by the C<list_*> methods to pull and initialize lists of objects fr
 sub list_entries {
     my ($self, $class, $path, %params) = @_;
 
-    my $response = $self->request( GET => $path => [ %params ] );
-
-    if ($response->is_error) {
-        croak $response->status_line;
-    }
-
-    my @items;
-    my $feed = XML::Twig->new( 
-        map_xmlns => {
-            'http://search.yahoo.com/mrss/'         => 'media',
-            'http://schemas.google.com/photos/2007' => 'gphoto',
-        },
-        twig_handlers => {
-            'entry' => sub {
-                push @items, $class->from_feed($self, $_);
-            },
-        },
-    );
-    $feed->parse($response->content);
-
-    return @items;
+    my $content = $self->_fetch_feed($path, %params);
+    return $self->_parse_feed($class, 'entry', $content);
 }
 
 
