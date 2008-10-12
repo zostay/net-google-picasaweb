@@ -172,7 +172,6 @@ This method returns C<undef> if no such album exists.
 
 sub get_album {
     my ($self, %params) = @_;
-    $params{kind} = 'album';
 
     croak "missing album_id parameter" unless defined $params{album_id};
 
@@ -284,7 +283,6 @@ Returns C<undef> if no matching comment is found.
 
 sub get_comment {
     my ($self, %params) = @_;
-    $params{kind} = 'comment';
 
     croak "missing album_id parameter"   unless defined $params{album_id};
     croak "missing photo_id parameter"   unless defined $params{photo_id};
@@ -369,7 +367,6 @@ If no such photo or video can be found, C<undef> will be returned.
 
 sub get_media_entry {
     my ($self, %params) = @_;
-    $params{kind} = 'photo';
 
     croak "missing album_id parameter" unless defined $params{album_id};
     croak "missing photo_id parameter" unless defined $params{photo_id};
