@@ -419,7 +419,7 @@ sub request {
         elsif (/POST/)   { $request = POST  ($url, @headers, Content => $content) }
         elsif (/PUT/)    { $request = PUT   ($url, @headers, Content => $content) }
         elsif (/DELETE/) { $request = DELETE($url, @headers) }
-        else             { confess "unkonwn method [$_]" }
+        else             { confess "unknown method [$_]" }
     }
 
     return $self->user_agent->request($request);
