@@ -7,6 +7,7 @@ author   'Andrew Sterling Hanenkamp <hanenkamp@cpan.org>';
 build_requires 'Test::More';
 build_requires 'Test::Mock::LWP';
 
+requires 'IO::Prompt';
 requires 'LWP::UserAgent';
 requires 'Moose';
 requires 'Net::Google::AuthSub';
