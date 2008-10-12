@@ -78,22 +78,13 @@ This method takes the L<Net::Google::PicasaWeb/STANDARD LIST OPTIONS>.
 
 =cut
 
-sub _feed_path {
-    my $self = shift;
-    return [ 
-        user    => $self->user_id, 
-        albumid => $self->album_id, 
-        photoid => $self->entry_id,
-    ]
-}
-
 sub list_tags {
     my ($self, %params) = @_;
     $params{kind} = 'tag';
 
     return $self->service->list_entries(
         'Net::Google::PicasaWeb::Tag',
-        $self->_feed_path,
+        $self->url,
         %params
     );
 }
@@ -112,7 +103,7 @@ sub list_comments {
 
     return $self->service->list_entries(
         'Net::Google::PicasaWeb::Comment',
-        $self->_feed_path,
+        $self->url,
         %params
     );
 }

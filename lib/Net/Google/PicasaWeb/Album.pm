@@ -73,7 +73,7 @@ sub list_media_entries {
 
     return $self->service->list_entries(
         'Net::Google::PicasaWeb::MediaEntry',
-        [ 'user', $self->user_id, 'albumid', $self->entry_id ],
+        $self->url,
         %params,
     );
 }
@@ -96,7 +96,7 @@ sub list_tags {
     my $user_id = delete $params{user_id} || 'default';
     return $self->service->list_entries(
         'Net::Google::PicasaWeb::Tag',
-        [ 'user', $self->user_id, 'albumid', $self->entry_id ],
+        $self->url,
         %params
     );
 }
