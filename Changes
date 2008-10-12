@@ -1,9 +1,21 @@
 Revision history for Net-Google-PicasaWeb
 
-0.03    ???
+0.03    October 12, 2008
 
     * Nudging the required Pod::Coverage version to 0.19
+    * Adding the requirement for IO::Prompt
     * Adding the missing import of Pod::Usage to picasa-get
+    * Adding a new picasa master command
+    * Adding a new picasa-list command
+    * Changed the --userid option to --user-id on picasa-get
+    * picasa-list and picasa-get will prompt for a password if --username is
+      used, but --password is not
+    * Adding get_album, get_media_entry, and get_comment to
+      Net::Google::PicasaWeb
+    * Fixed a bug where objects can fail to load when the media:group tag is not
+      used.
+    * [RT #39976] Fixing a bug where list_tags() and other methods fail to work
+      because gphoto:user is not given with the parent entry
 
 0.02    September 16, 2008
 
