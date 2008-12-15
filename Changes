@@ -15,7 +15,8 @@ Revision history for Net-Google-PicasaWeb
     * Fixed a bug where objects can fail to load when the media:group tag is not
       used.
     * [RT #39976] Fixing a bug where list_tags() and other methods fail to work
-      because gphoto:user is not given with the parent entry
+      because gphoto:user is not given with the parent entry 
+      (thanks Nik Clayton)
 
 0.02    September 16, 2008
 
