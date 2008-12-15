@@ -1,5 +1,9 @@
 Revision history for Net-Google-PicasaWeb
 
+0.04    December 14, 2008
+
+    * Forgot to add picasa and picasa-list as installed scripts
+
 0.03    December 14, 2008
 
     * Nudging the required Pod::Coverage version to 0.19
