@@ -15,13 +15,13 @@ my $service = Net::Google::PicasaWeb->new;
 
 # Setup the list albums response
 {
-    open my $fh, 't/data/list_albums.xml' or die "failed to open test data: $!";
+    open my $fh, 't/data/get_album.xml' or die "failed to open test data: $!";
     $Mock_response->set_always( content => do { local $/; <$fh> } );
 }
 
 my @albums = $service->get_album( album_id => '1234567890' );
 is($Mock_request->{new_args}[1], 'GET', 'method is GET');
-is($Mock_request->{new_args}[2], 'http://picasaweb.google.com/data/feed/api/user/default/albumid/1234567890?kind=album', 'URL is correct');
+is($Mock_request->{new_args}[2], 'http://picasaweb.google.com/data/feed/api/user/default/albumid/1234567890', 'URL is correct');
 is(scalar @albums, 1, 'found 1 albums');
 
 my $album = $albums[0];
