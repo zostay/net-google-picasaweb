@@ -64,10 +64,14 @@ This method creates the feed object from the service object and an L<XML::Twig::
 sub from_feed {
     my ($class, $service, $entry) = @_;
 
+    my $url = $entry->field('id');
+    $url =~ s/^\s+//; $url =~ s/\s+$//;
+    $url =~ s{/data/entry/}{/data/feed/};
+
     my %params = (
         service  => $service,
         twig     => $entry,
-        url      => $entry->field('id'),
+        url      => $url,
         title    => $entry->field('title'),
         summary  => $entry->field('summary'),
         entry_id => $entry->field('gphoto:id'),
