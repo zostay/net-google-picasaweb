@@ -21,4 +21,4 @@ eval {
 };
 
 ok($@, 'got an error on bad response');
-like($@, qr/^Error logging in: /, 'error starts correctly');
+like($@, qr/^error logging in: /, 'error starts correctly');
