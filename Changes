@@ -1,6 +1,6 @@
 Revision history for Net-Google-PicasaWeb
 
-0.03    October 12, 2008
+0.03    December 14, 2008
 
     * Nudging the required Pod::Coverage version to 0.19
     * Adding the requirement for IO::Prompt
