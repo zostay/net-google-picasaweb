@@ -260,7 +260,7 @@ sub _feed_url {
 
     $path = join '/', @$path if ref $path;
     $path = 'http://picasaweb.google.com/data/feed/api/' . $path
-        unless $path =~ m{^https?://};
+        unless $path =~ m{^https?:};
 
     my $uri = URI->new($path);
     $uri->query_form($query) if $query;
