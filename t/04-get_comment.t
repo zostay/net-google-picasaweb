@@ -15,7 +15,7 @@ my $service = Net::Google::PicasaWeb->new;
 
 # Setup the list comments response
 {
-    open my $fh, 't/data/list_comments.xml' or die "failed to open test data: $!";
+    open my $fh, 't/data/get_comment.xml' or die "failed to open test data: $!";
     $Mock_response->set_always( content => do { local $/; <$fh> } );
 }
 
@@ -25,7 +25,7 @@ my @comments = $service->get_comment(
     comment_id => 'ABCDEFGHIJ',
 );
 is($Mock_request->{new_args}[1], 'GET', 'method is GET');
-is($Mock_request->{new_args}[2], 'http://picasaweb.google.com/data/feed/api/user/default/albumid/1234567890/photoid/0987654321/commentid/ABCDEFGHIJ?kind=comment', 'URL is correct');
+is($Mock_request->{new_args}[2], 'http://picasaweb.google.com/data/feed/api/user/default/albumid/1234567890/photoid/0987654321/commentid/ABCDEFGHIJ', 'URL is correct');
 is(scalar @comments, 1, 'found 1 comments');
 
 my $comment = $comments[0];
