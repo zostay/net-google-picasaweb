@@ -38,7 +38,7 @@ pod2usage("$0: The --kind option must be set to either album or photo")
     unless $kind eq 'album' or $kind eq 'photo';
 
 if (defined $username and not $password) {
-    $password = prompt -echo '', 'password: ';
+    $password = prompt -echo => '', 'password: ';
 }
 
 pod2usage("$0: You must give both --username and if you give --password")
