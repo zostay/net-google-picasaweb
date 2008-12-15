@@ -14,7 +14,9 @@ requires 'Net::Google::AuthSub';
 requires 'URI';
 requires 'XML::Twig'             => '3.30'; # added fields method
 
+install_script 'script/picasa'
 install_script 'script/picasa-get';
+install_script 'script/picasa-list';
 
 auto_install;
 
