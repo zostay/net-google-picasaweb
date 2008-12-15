@@ -15,7 +15,7 @@ my $service = Net::Google::PicasaWeb->new;
 
 # Setup the list photos response
 {
-    open my $fh, 't/data/list_media_entries.xml' or die "failed to open test data: $!";
+    open my $fh, 't/data/get_media_entry.xml' or die "failed to open test data: $!";
     $Mock_response->set_always( content => do { local $/; <$fh> } );
 }
 
@@ -24,7 +24,7 @@ my @photos = $service->get_media_entry(
     photo_id => '0987654321',
 );
 is($Mock_request->{new_args}[1], 'GET', 'method is GET');
-is($Mock_request->{new_args}[2], 'http://picasaweb.google.com/data/feed/api/user/default/albumid/1234567890/photoid/0987654321?kind=photo', 'URL is correct');
+is($Mock_request->{new_args}[2], 'http://picasaweb.google.com/data/feed/api/user/default/albumid/1234567890/photoid/0987654321', 'URL is correct');
 is(scalar @photos, 1, 'found 1 photos');
 
 my $media = $photos[0];
