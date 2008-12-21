@@ -12,26 +12,30 @@ my ($username, $password);
 my $kind    = 'album';
 my $user_id;
 my @album_ids;
+my (@photo_rules, @album_rules);
 my %options;
 my $update;
 my ($dry_run, $quiet);
 
 GetOptions(
-    'username=s'  => \$username,
-    'password=s'  => \$password,
-    'kind=s'      => \$kind,
-    'user-id=s'   => \$user_id,
-    'option=s%'   => \%options,
+    'username=s'    => \$username,
+    'password=s'    => \$password,
+    'kind=s'        => \$kind,
+    'user-id=s'     => \$user_id,
+    'option=s%'     => \%options,
 
-    'album-id=s@' => \@album_ids,
+    'album-id=s@'   => \@album_ids,
 
-    'update'      => \$update,
+    'find-photo=s@' => \@photo_rules,
+    'find-album=s@' => \@album_rules,
 
-    'dry-run'     => \$dry_run,
-    'quiet'       => \$quiet,
+    'update'        => \$update,
 
-    help          => \$help,
-    man           => \$man,
+    'dry-run'       => \$dry_run,
+    'quiet'         => \$quiet,
+
+    help            => \$help,
+    man             => \$man,
 ) || pod2usage(-verbose => 0);
 
 pod2usage(-verbose => 1) if $help;
@@ -91,6 +95,27 @@ else {
     &download_albums(undef, @photos);
 }
 
+sub process_rules($\@) {
+    my ($type, $rules) = @_;
+
+    my %rules;
+    for (@$rules) {
+        my ($field, $op, $value);
+        unless (($field, $op, $value) = /^(\w+)(=~|=)(.*)$/) {
+            die "Invalid --find-$type rule: $_\n";
+        }
+
+        if ($op eq '=') {
+            $rules{$field} = $value;
+        }
+        else {
+            $rules{$field} = qr/$value/;
+        }
+    }
+
+    return %rules;
+}
+
 sub to_filename {
     local $_ = shift;
     s/[^\w\._-]+/-/g;
@@ -104,6 +129,8 @@ sub download_albums {
 
     ALBUM:
     for my $album (@albums) {
+        next unless $album->match( process_rules( album => @album_rules ) );
+
         my $dir_name = to_filename($album->title);
         if (-e $dir_name) {
             warn "$0: $dir_name exists, will not overwrite\n";
@@ -127,6 +154,8 @@ sub download_photos {
 
     PHOTO:
     for my $photo (@photos) {
+        next unless $photo->match( process_rules( photo => @photo_rules ) );
+
         my $file_name = $path_prefix . to_filename($photo->title);
         if (-e $file_name) {
             warn "$0: $file_name exists, will not overwrite\n";
