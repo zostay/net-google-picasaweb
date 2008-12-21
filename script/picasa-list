@@ -12,6 +12,7 @@ my ($help, $man);
 my ($username, $password);
 my $kind    = 'album';
 my ($user_id, $album_id, $photo_id, $comment_id);
+my @rules;
 my %options;
 my $quiet;
 
@@ -24,6 +25,8 @@ GetOptions(
     'album-id=s'   => \$album_id,
     'photo-id=s'   => \$photo_id,
     'comment-id=s' => \$comment_id,
+
+    'find=s@'      => \@rules,
 
     'option=s%'    => \%options,
 
@@ -42,6 +45,9 @@ pod2usage("$0: The --kind option must be set to one of: album, photo, tag, comme
 
 pod2usage("$0: You cannot use --photo-id when --kind is album")
     if $kind eq 'album' and defined $photo_id;
+
+pod2usage("$0: You cannot use --find when --kind is tag")
+    if $kind eq 'tag' and @rules;
 
 if (defined $username and not $password) {
     $password = prompt -echo => '', 'password: ';
@@ -122,6 +128,27 @@ sub print_list {
     }
 }
 
+sub find_items(\@\@) {
+    my ($items, $rules) = @_;
+
+    my %rules;
+    for (@$rules) {
+        my ($field, $op, $value);
+        unless (($field, $op, $value) = /^(\w+)(=~|=)(.*)$/) {
+            die "Invalid --find rule: $_\n";
+        }
+
+        if ($op eq '=') {
+            $rules{$field} = $value;
+        }
+        else {
+            $rules{$field} = qr/$value/;
+        }
+    }
+
+    @$items = Net::Google::PicasaWeb::Base->grep_matches($items, %rules);
+}
+
 if ($kind eq 'album') {
     my @albums;
     if (defined $album_id) {
@@ -133,6 +160,8 @@ if ($kind eq 'album') {
     else {
         @albums = $service->list_albums(%options);
     }
+
+    find_items(@albums, @rules) if @rules;
 
     print_list( albums =>
         [ 'ID', 'Name' ],
@@ -163,6 +192,8 @@ elsif ($kind eq 'photo') {
     else {
         @photos = $service->list_media_entries(%options);
     }
+
+    find_items(@photos, @rules) if @rules;
 
     print_list( photos =>
         [ 'ID', 'Name' ],
@@ -247,6 +278,7 @@ elsif ($kind eq 'comment') {
             @comments = $service->list_comments(%options);
         }
     }
+    find_items(@comments, @rules) if @rules;
     print_list( comments =>
         [ 'ID', 'By', 'Content' ],
         map { [ $_->entry_id, $_->title, $_->content ] } @comments
@@ -276,6 +308,9 @@ picasa-list - list albums, photos, tags, or comments from Google Picasa Web
     --user-id <user-id>      the user ID to look for albums or photos in 
     --album-id <album-id>    album ID to look in for photos, comments, or tags
     --photo-id <photo-id>    photo ID to look at for comments or tags
+
+    --find <field>=<value>   Limit to items just matching this matching rule
+    --find <field>=<regex>   Limit to items just matching the Perl regex
 
     --option <key>=<value>   special options: q, location, etc.
 
@@ -335,6 +370,54 @@ This is the ID of the album to use when listing photos, tags, or comments.
 =item B<--photo-id>
 
 This is the ID of the photo to use when listing tags or comments.
+
+=item B<--find>
+
+This option allows you to specify additional rules to match items by. This option can be used more than once to require additional rules. Each rule is given with a field name followed by either "=" to specify and exact match or "=~" to specify a Perl regular expression match, finally with the value to match. For example, to match only those albums containing "2008" in the name, you could run:
+
+  picasa-list --kind album --username example --find title=~2008
+
+Here is a list of fields you can compare against:
+
+=over
+
+=item *
+
+id
+
+=item *
+
+url
+
+=item *
+
+title
+
+=item *
+
+summary
+
+=item *
+
+author_name
+
+=item *
+
+author_uri
+
+=item *
+
+entry_id
+
+=item *
+
+user_id
+
+=item *
+
+content (only available on comments)
+
+=back
 
 =item B<--option>
 
