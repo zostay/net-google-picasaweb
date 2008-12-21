@@ -10,6 +10,7 @@ build_requires 'Test::Mock::LWP';
 requires 'IO::Prompt';
 requires 'LWP::UserAgent';
 requires 'Moose';
+requires 'MooseX::Role::Matcher';
 requires 'Net::Google::AuthSub';
 requires 'URI';
 requires 'XML::Twig'             => '3.30'; # added fields method

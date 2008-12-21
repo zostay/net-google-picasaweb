@@ -4,6 +4,8 @@ use warnings;
 package Net::Google::PicasaWeb::Base;
 use Moose;
 
+with 'MooseX::Role::Matcher' => { default_match => 'id' };
+
 =head1 NAME
 
 Net::Google::PicasaWeb::Base - base class
