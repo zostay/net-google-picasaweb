@@ -309,7 +309,7 @@ picasa-list - list albums, photos, tags, or comments from Google Picasa Web
     --album-id <album-id>    album ID to look in for photos, comments, or tags
     --photo-id <photo-id>    photo ID to look at for comments or tags
 
-    --find <field>=<value>   Limit to items just matching this matching rule
+    --find <field>=<value>   Limit to items just matching this rule
     --find <field>=<regex>   Limit to items just matching the Perl regex
 
     --option <key>=<value>   special options: q, location, etc.
