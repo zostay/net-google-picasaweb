@@ -11,24 +11,27 @@ my ($help, $man);
 my ($username, $password);
 my $kind    = 'album';
 my $user_id;
+my @album_ids;
 my %options;
 my $update;
 my ($dry_run, $quiet);
 
 GetOptions(
-    'username=s' => \$username,
-    'password=s' => \$password,
-    'kind=s'     => \$kind,
+    'username=s'  => \$username,
+    'password=s'  => \$password,
+    'kind=s'      => \$kind,
     'user-id=s'   => \$user_id,
-    'option=s%'  => \%options,
+    'option=s%'   => \%options,
 
-    'update'     => \$update,
+    'album-id=s@' => \@album_ids,
 
-    'dry-run'    => \$dry_run,
-    'quiet'      => \$quiet,
+    'update'      => \$update,
 
-    help         => \$help,
-    man          => \$man,
+    'dry-run'     => \$dry_run,
+    'quiet'       => \$quiet,
+
+    help          => \$help,
+    man           => \$man,
 ) || pod2usage(-verbose => 0);
 
 pod2usage(-verbose => 1) if $help;
@@ -59,7 +62,26 @@ if ($kind eq 'album') {
     $user_id ||= 'default';
 
     $options{user_id} = $user_id;
-    my @albums = $service->list_albums(%options);
+
+    my @albums;
+    if (@album_ids) {
+        @albums = map { 
+            my $album = eval {
+                $service->get_album(%options, album_id => $_)
+            };
+            if ($@) {
+                warn "Error loading album ID $_: $@";
+                ();
+            }
+            else {
+                $album;
+            }
+        } @album_ids;
+    }
+    else {
+        @albums = $service->list_albums(%options);
+    }
+
     &download_albums(@albums);
 }
 
@@ -136,6 +158,7 @@ picasa-get - fetch albums and photos from Google Picasa Web
     --kind <kind>            either "album" or "photo" (default: album)
     --user-id <user-id>      the user ID to look for albums or photos in 
     --album-id <album-id>    the album ID to look for photos in
+                             (use multiple times to get more than one)
 
     --option <key>=<value>   special options: q, location, etc.
 
@@ -189,7 +212,7 @@ If B<--kind> is set to "photo", then the default is not to set this at all, but 
 
 =item B<--album-id>
 
-This is the ID of the album to use when fetching photos.
+This is the ID of the album to use when fetching photos. This option can be used more than once to specify multiple albums to fetch.
 
 =item B<--option>
 
