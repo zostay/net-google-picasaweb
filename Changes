@@ -1,5 +1,13 @@
 Revision history for Net-Google-PicasaWeb
 
+0.05    December 21, 2008
+
+    * Added MooseX::Role::Matcher to all item classes
+    * Added the --album-id option to the picasa-list script
+    * Added the --find option to the picasa-list script
+    * Added the --find-album option to the picasa-get script
+    * Added the --find-photo option to the picasa-get script
+
 0.04    December 14, 2008
 
     * Forgot to add picasa and picasa-list as installed scripts
