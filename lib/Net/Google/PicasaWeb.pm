@@ -456,8 +456,9 @@ sub request {
     my $self    = shift;
     my $method  = shift;
     my $path    = shift;
-    my $query   = $method eq 'GET' ? shift : undef;
+    my $query   = ($method eq 'GET') ? shift : undef;
     my $content = shift;
+    my $type    = (($method eq 'POST') or ($method eq 'PUT')) ? shift : undef;
 
     my @headers = $self->authenticator->auth_params;
 
@@ -467,8 +468,8 @@ sub request {
     {
         local $_ = $method;
         if    (/GET/)    { $request = GET   ($url, @headers) }
-        elsif (/POST/)   { $request = POST  ($url, @headers, Content => $content) }
-        elsif (/PUT/)    { $request = PUT   ($url, @headers, Content => $content) }
+        elsif (/POST/)   { $request = POST  ($url, @headers, Content => $content, Content_Type => $type) }
+        elsif (/PUT/)    { $request = PUT   ($url, @headers, Content => $content, Content_Type => $type) }
         elsif (/DELETE/) { $request = DELETE($url, @headers) }
         else             { confess "unknown method [$_]" }
     }
