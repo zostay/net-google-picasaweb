@@ -5,7 +5,9 @@ package Net::Google::PicasaWeb;
 use Moose;
 
 use Carp;
+use HTTP::Message;
 use HTTP::Request::Common;
+use HTTP::Request;
 use LWP::UserAgent;
 use Net::Google::AuthSub;
 use URI;
@@ -474,6 +476,96 @@ sub get_media_entry {
 
 *get_photo = *get_media_entry;
 *get_video = *get_media_entry;
+
+=head2 add_media_entry
+
+=head2 add_photo
+
+=head2 add_video
+
+  my $media_entry = $service->add_media_entry(
+      user_id   => $user_id,
+      album_id  => $album_id,
+      title     => $title,
+      summary   => $summary,
+      keywords  => ($keyword, $keyword, ),
+      data      => $binary,
+      data_type => $content_type,
+  );
+
+=cut
+
+sub add_media_entry {
+    my ($self, %params) = @_;
+
+    my $user_id  = $params{user_id} || 'default';
+    my $album_id = $params{album_id} || 'default';
+    my $data_type = $params{data_type} || 'image/jpeg';
+
+    # Prepare Atom
+    my $twig = XML::Twig->new(
+        pretty_print => 'indented',
+        empty_tags   => 'expand',
+    );
+
+    my $root = XML::Twig::Elt->new(
+        'entry' => {
+            'xmlns'        => 'http://www.w3.org/2005/Atom',
+        }
+    );
+
+    $twig->set_root($root);
+
+    my $title = XML::Twig::Elt->new('title' => {'type' => 'text'}, $params{title});
+    $title->paste(last_child => $root);
+
+    my $summary = XML::Twig::Elt->new('summary' => {'type' => 'text'}, $params{summary});
+    $summary->paste(last_child => $root);
+
+    # TODO:
+    #   <media:group>
+    #       <media:keywords>
+    #           keyword, keyword, ...
+    #       </media:keywords>
+    #   </media:group>
+
+    my $category = XML::Twig::Elt->new(
+        'category' => {
+            'scheme' => 'http://schemas.google.com/g/2005#kind',
+            'term'   => 'http://schemas.google.com/photos/2007#photo'
+        }
+    );
+    $category->paste(last_child => $root);
+
+    # Prepare REST message
+    my $uri = "http://picasaweb.google.com/data/feed/api/user/$user_id/albumid/$album_id";
+    my $request = HTTP::Request->new(POST => $uri, [$self->authenticator->auth_params,
+                                                    'Content-Type' => 'multipart/related',
+                                                    'MIME-version' => '1.0']);
+    $request->add_part(HTTP::Message->new(['Content-Type' => 'application/atom+xml'], $twig->sprint()));
+    $request->add_part(HTTP::Message->new(['Content-Type' => $data_type], $params{data}));
+
+    # Drain cache (workaround)
+    $request->_content($request);
+
+    # Clear unneeded Twig
+    $twig->purge();
+
+    my $response = $self->user_agent->request($request);
+
+    $request->clear();
+
+    if ($response->is_error) {
+        croak $response->status_line;
+    }
+
+    # FIXME: Should be proper parses here
+    my @entries = $self->_parse_feed('Net::Google::PicasaWeb::MediaEntry', 'entry', $response->content);
+    return scalar $entries[0];
+}
+
+*add_photo = *add_media_entry;
+*add_video = *add_media_entry;
 
 =head1 HELPERS
 
