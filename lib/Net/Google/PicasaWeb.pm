@@ -223,6 +223,99 @@ sub get_album {
     );
 }
 
+=head2 add_album
+
+Create a new album for the current authenticated user.
+
+  my $album = $service->add_album(
+      title             => 'Trip to Italy',
+      summary           => 'This was the recent trip I took to Italy',
+      location          => 'Italy',
+      access            => 'public',
+      commentingEnabled => 'true',
+      timestamp         => '1152255600000',
+      keywords          => ('italy', 'vacation'),
+  );
+
+=over
+
+=item title
+
+The title of a new album.
+
+=item summary
+
+A small description of the album.
+
+=item location
+
+The location of the place where the photos have been taken.
+
+=item access
+
+The type of access to this album. It could be C<public> or C<private>.
+
+=back
+
+The default values will be applied by PicasaWeb on the server side.
+
+See
+C<http://code.google.com/intl/en-US/apis/picasaweb/developers_guide_protocol.html#AddAlbums>
+for details.
+
+=cut
+
+sub add_album {
+    my ($self, %params) = @_;
+
+    my $twig = XML::Twig->new(
+        pretty_print => 'indented',
+        empty_tags   => 'expand',
+    );
+
+    my $root = XML::Twig::Elt->new(
+        'entry' => {
+            'xmlns'        => 'http://www.w3.org/2005/Atom',
+            'xmlns:media'  => 'http://search.yahoo.com/mrss/',
+            'xmlns:gphoto' => 'http://schemas.google.com/photos/2007',
+        }
+    );
+
+    $twig->set_root($root);
+
+    $root->insert_new_elt('last_child', title => {type => 'text'}, $params{title});
+    $root->insert_new_elt('last_child', summary => {type => 'text'}, $params{summary});
+
+    foreach my $gphoto ('location', 'access', 'commentingEnabled', 'timestamp') {
+        $root->insert_new_elt('last_child', 'gphoto:' . $gphoto, $params{$gphoto});
+    }
+
+    my $group = $root->insert_new_elt('last_child', 'media:group');
+
+    if (defined $params{keywords}) {
+        $group->insert_new_elt('last_child', 'media:keywords', join(', ', $params{keywords}));
+    }
+
+    $root->insert_new_elt('last_child',
+        'category' => {
+            'scheme' => 'http://schemas.google.com/g/2005#kind',
+            'term'   => 'http://schemas.google.com/photos/2007#album'
+        }
+    );
+
+    my $uri = $self->service_base_url . 'user/default';
+    my $response = $self->request('POST', $uri, $twig->sprint(), 'application/atom+xml');
+
+    $twig->purge();
+
+    if ($response->is_error) {
+        croak $response->status_line;
+    }
+
+    my @entries = $self->_parse_feed('Net::Google::PicasaWeb::Album', 'entry', $response->content);
+    return scalar $entries[0];
+}
+
 =head2 list_tags
 
 Returns a list of tags that have been used by the logged user or the user named in the C<user_id> parameter.
