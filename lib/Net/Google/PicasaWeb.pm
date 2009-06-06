@@ -185,6 +185,90 @@ sub get_album {
     );
 }
 
+=head2 add_album
+
+http://code.google.com/intl/en-US/apis/picasaweb/developers_guide_protocol.html#AddAlbums
+
+  my $album = $service->add_album(
+      title             => 'Trip to Italy',
+      summary           => 'This was the recent trip I took to Italy',
+      location          => 'Italy',
+      access            => 'public',
+      commentingEnabled => 'true',
+      timestamp         => '1152255600000',
+      keywords          => ('italy', 'vacation'),
+  );
+
+=over
+
+=item title
+
+Title of the new album.
+
+=back
+
+Default values will be applied by PicasaWeb on server side.
+
+=cut
+
+sub add_album {
+    my ($self, %params) = @_;
+
+    my $twig = XML::Twig->new(
+        pretty_print => 'indented',
+        empty_tags   => 'expand',
+    );
+
+    my $root = XML::Twig::Elt->new(
+        'entry' => {
+            'xmlns'        => 'http://www.w3.org/2005/Atom',
+            'xmlns:media'  => 'http://search.yahoo.com/mrss/',
+            'xmlns:gphoto' => 'http://schemas.google.com/photos/2007',
+        }
+    );
+
+    $twig->set_root($root);
+
+    my $title = XML::Twig::Elt->new('title' => {'type' => 'text'}, $params{'title'});
+    $title->paste(last_child => $root);
+
+    my $summary = XML::Twig::Elt->new('summary' => {'type' => 'text'}, $params{'summary'});
+    $summary->paste(last_child => $root);
+
+    foreach my $gphoto ('location', 'access', 'commentingEnabled', 'timestamp') {
+        my $gelem = XML::Twig::Elt->new('gphoto:' . $gphoto, $params{$gphoto});
+        $gelem->paste(last_child => $root);
+    }
+
+    my $group = XML::Twig::Elt->new('media:group');
+    $group->paste(last_child => $root);
+
+    if (defined $params{'keywords'}) {
+        my $keywords = XML::Twig::Elt->new('media:keywords', join(', ', $params{'keywords'}));
+        $keywords->paste(last_child => $group);
+    }
+
+    my $category = XML::Twig::Elt->new(
+        'category' => {
+            'scheme' => 'http://schemas.google.com/g/2005#kind',
+            'term'   => 'http://schemas.google.com/photos/2007#album'
+        }
+    );
+    $category->paste(last_child => $root);
+
+    my $uri = 'http://picasaweb.google.com/data/feed/api/user/default';
+    my $response = $self->request('POST', $uri, $twig->sprint(), 'application/atom+xml');
+
+    $twig->purge();
+
+    if ($response->is_error) {
+        croak $response->status_line;
+    }
+
+    my @entries = $self->_parse_feed('Net::Google::PicasaWeb::Album', 'entry', $response->content);
+    return scalar $entries[0];
+}
+
 =head2 list_tags
 
 Returns a list of tags that have been used by the logged user or the user named in the C<user_id> parameter.
