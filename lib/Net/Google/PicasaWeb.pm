@@ -231,32 +231,25 @@ sub add_album {
 
     $twig->set_root($root);
 
-    my $title = XML::Twig::Elt->new('title' => {'type' => 'text'}, $params{'title'});
-    $title->paste(last_child => $root);
-
-    my $summary = XML::Twig::Elt->new('summary' => {'type' => 'text'}, $params{'summary'});
-    $summary->paste(last_child => $root);
+    $root->insert_new_elt('last_child', title => {type => 'text'}, $params{title});
+    $root->insert_new_elt('last_child', summary => {type => 'text'}, $params{summary});
 
     foreach my $gphoto ('location', 'access', 'commentingEnabled', 'timestamp') {
-        my $gelem = XML::Twig::Elt->new('gphoto:' . $gphoto, $params{$gphoto});
-        $gelem->paste(last_child => $root);
+        $root->insert_new_elt('last_child', 'gphoto:' . $gphoto, $params{$gphoto});
     }
 
-    my $group = XML::Twig::Elt->new('media:group');
-    $group->paste(last_child => $root);
+    my $group = $root->insert_new_elt('last_child', 'media:group');
 
-    if (defined $params{'keywords'}) {
-        my $keywords = XML::Twig::Elt->new('media:keywords', join(', ', $params{'keywords'}));
-        $keywords->paste(last_child => $group);
+    if (defined $params{keywords}) {
+        $group->insert_new_elt('last_child', 'media:keywords', join(', ', $params{keywords}));
     }
 
-    my $category = XML::Twig::Elt->new(
+    $root->insert_new_elt('last_child',
         'category' => {
             'scheme' => 'http://schemas.google.com/g/2005#kind',
             'term'   => 'http://schemas.google.com/photos/2007#album'
         }
     );
-    $category->paste(last_child => $root);
 
     my $uri = 'http://picasaweb.google.com/data/feed/api/user/default';
     my $response = $self->request('POST', $uri, $twig->sprint(), 'application/atom+xml');
@@ -516,11 +509,8 @@ sub add_media_entry {
 
     $twig->set_root($root);
 
-    my $title = XML::Twig::Elt->new('title' => {'type' => 'text'}, $params{title});
-    $title->paste(last_child => $root);
-
-    my $summary = XML::Twig::Elt->new('summary' => {'type' => 'text'}, $params{summary});
-    $summary->paste(last_child => $root);
+    $root->insert_new_elt('last_child', title => {type => 'text'}, $params{title});
+    $root->insert_new_elt('last_child', summary => {type => 'text'}, $params{summary});
 
     # TODO:
     #   <media:group>
@@ -529,13 +519,12 @@ sub add_media_entry {
     #       </media:keywords>
     #   </media:group>
 
-    my $category = XML::Twig::Elt->new(
+    $root->insert_new_elt('last_child',
         'category' => {
             'scheme' => 'http://schemas.google.com/g/2005#kind',
             'term'   => 'http://schemas.google.com/photos/2007#photo'
         }
     );
-    $category->paste(last_child => $root);
 
     # Prepare REST message
     my $uri = "http://picasaweb.google.com/data/feed/api/user/$user_id/albumid/$album_id";
@@ -559,7 +548,7 @@ sub add_media_entry {
         croak $response->status_line;
     }
 
-    # FIXME: Should be proper parses here
+    # FIXME: Should be proper parser here
     my @entries = $self->_parse_feed('Net::Google::PicasaWeb::MediaEntry', 'entry', $response->content);
     return scalar $entries[0];
 }
