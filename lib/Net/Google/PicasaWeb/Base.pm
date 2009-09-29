@@ -28,7 +28,7 @@ has service => (
     is => 'rw',
     isa => 'Net::Google::PicasaWeb',
     required => 1,
-    weaken => 1,
+    weak_ref => 1,
 );
 
 =head2 twig

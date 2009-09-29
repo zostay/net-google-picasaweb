@@ -174,7 +174,7 @@ has media => (
     is => 'rw',
     isa => 'Net::Google::PicasaWeb::Media',
     required => 1,
-    weaken => 1,
+    weak_ref => 1,
 );
 
 =head3 url
@@ -266,7 +266,7 @@ has media => (
     is => 'rw',
     isa => 'Net::Google::PicasaWeb::Media',
     required => 1,
-    weaken => 1,
+    weak_ref => 1,
 );
 
 =head3 url
