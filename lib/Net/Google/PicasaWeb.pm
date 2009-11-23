@@ -23,11 +23,13 @@ Net::Google::PicasaWeb - use Google's Picasa Web API
 
 =head1 VERSION
 
-Version 0.06
+Version 0.06_01
+
+B<DEVELOPMENT VERSION:> The update features of this API are EXPERIMENTAL. They may change in a future release. They are not well-tested (there are not even unit tests as of this writing).
 
 =cut
 
-our $VERSION = '0.06';
+our $VERSION = '0.06_01';
 
 =head1 SYNOPSIS
 

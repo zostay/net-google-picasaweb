@@ -1,5 +1,12 @@
 Revision history for Net-Google-PicasaWeb
 
+0.06_01 November 23, 2009
+
+    * Thanks to Andy Shevchenko
+    * Use a custom Content-Type on PUT or POST
+    * Adding the add_album() method
+    * Adding the add_media_entry() method
+
 0.06    November 23, 2009
 
     * Corrected "weaken" typo in Moose declarations with weak_ref (thanks zoul)
