@@ -58,6 +58,39 @@ has album_id => (
     isa => 'Str',
 );
 
+=head2 width
+
+The width of the video or photo in pixels.
+
+=cut
+
+has width => (
+    is => 'rw',  # should probably be 'ro'
+    isa => 'Int',
+);
+
+=head2 height
+
+The height of the video or photo in pixels.
+
+=cut
+
+has height => (
+    is => 'rw',  # should probably be 'ro'
+    isa => 'Int',
+);
+
+=head2 size
+
+The size of the video or photo in bytes.
+
+=cut
+
+has size => (
+    is => 'rw',  # should probably be 'ro'
+    isa => 'Int',
+);
+
 =head1 METHODS
 
 =cut
@@ -67,6 +100,11 @@ override from_feed => sub {
     my $self = $class->super($service, $entry);
 
     $self->album_id($entry->field('gphoto:albumid'));
+
+    $self->width($entry->field('gphoto:width'));
+    $self->height($entry->field('gphoto:height'));
+    $self->size($entry->field('gphoto:size'));
+
     return $self;
 };
 
