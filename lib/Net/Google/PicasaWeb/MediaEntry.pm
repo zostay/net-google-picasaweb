@@ -101,9 +101,12 @@ override from_feed => sub {
 
     $self->album_id($entry->field('gphoto:albumid'));
 
-    $self->width($entry->field('gphoto:width'));
-    $self->height($entry->field('gphoto:height'));
-    $self->size($entry->field('gphoto:size'));
+    $self->width($entry->field('gphoto:width'))
+        if $entry->field('gphoto:width');
+    $self->height($entry->field('gphoto:height'))
+        if $entry->field('gphoto:height');
+    $self->size($entry->field('gphoto:size'))
+        if $entry->field('gphoto:size');
 
     return $self;
 };

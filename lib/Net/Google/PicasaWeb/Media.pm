@@ -120,8 +120,9 @@ sub from_feed {
             url       => $content->att('url'),
             mime_type => $content->att('type'),
             medium    => $content->att('medium'),
-            height    => $content->att('height'),
-            width     => $content->att('width'),
+
+            ($content->att('height') ? (height => $content->att('height')) : ()),
+            ($content->att('width')  ? (width  => $content->att('width'))  : ()),
         )
     );
     $self->thumbnails(
@@ -130,8 +131,9 @@ sub from_feed {
                 Net::Google::PicasaWeb::Media::Thumbnail->new(
                     media  => $self,
                     url    => $_->att('url'),
-                    width  => $_->att('width'),
-                    height => $_->att('height'),
+
+                    ($_->att('height') ? (height => $_->att('height')) : ()),
+                    ($_->att('width')  ? (width  => $_->att('width'))  : ()),
                 )
             } $media_group->children('media:thumbnail')
         ]
@@ -232,7 +234,7 @@ The width of the photo in pixels.
 
 has width => (
     is => 'rw',  # should probably be 'ro'
-    isa => 'Undef | Int',
+    isa => 'Int',
 );
 
 =head3 height
@@ -243,7 +245,7 @@ The height of the photo in pixels.
 
 has height => (
     is => 'rw',  # should probably be 'ro'
-    isa => 'Undef | Int',
+    isa => 'Int',
 );
 
 =head1 METHODS
