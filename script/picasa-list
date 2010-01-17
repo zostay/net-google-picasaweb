@@ -14,7 +14,7 @@ my $kind    = 'album';
 my ($user_id, $album_id, $photo_id, $comment_id);
 my @rules;
 my %options;
-my ($long, $quiet);
+my ($long, $human, $quiet);
 
 GetOptions(
     'username=s'   => \$username,
@@ -31,6 +31,7 @@ GetOptions(
     'option=s%'    => \%options,
 
     'long'         => \$long,
+    'human'        => \$human,
     'quiet'        => \$quiet,
 
     help           => \$help,
@@ -67,6 +68,38 @@ if ($username) {
     $service->login($username, $password);
 }
 
+{
+    # This is excessive, yes? :-D
+    my @human_abbr = (
+        KiB => 10,
+        MiB => 20,
+        GiB => 30,
+        TiB => 40,
+        PiB => 50,
+        EiB => 60,
+        ZiB => 70,
+        YiB => 80,
+    );
+
+    sub humanize_bytes {
+        my $bytes = shift;
+        return $bytes unless $human;
+
+        # Work with a copy
+        my @human_abbr = @human_abbr;
+        my ($last_abbr, $base_size) = ('  B', 1);
+        ABBR: while (my ($abbr, $power2) = splice @human_abbr, 0, 2) {
+            my $new_base_size = 2**$power2;
+
+            last ABBR if $bytes < $new_base_size;
+
+            ($last_abbr, $base_size) = ($abbr, $new_base_size);
+        }
+
+        return sprintf('%-.2f', $bytes / $base_size) . $last_abbr;
+    }
+}
+
 sub print_list {
     my $type = shift;
     unless (@_ > 1) {
@@ -74,17 +107,27 @@ sub print_list {
         return;
     }
 
+    my @numbers = (1) x scalar(@_);
     my @longest;
-    for my $row (@_) {
-        for my $i (0 .. $#{ $row }) {
+    my $skip_first = 1;
+    ROW: for my $row (@_) {
+        COLUMN: for my $i (0 .. $#{ $row }) {
             my @lines = split /\n/, $row->[$i];
             $longest[$i] = max($longest[$i]||0, map { length } @lines);
+
+            next COLUMN if $skip_first;
+            $numbers[$i] &&= $lines[0] =~ /^\d/;
         }
+
+        $skip_first = 0;
     }
 
     my $format;
-    for my $length (@longest) {
-        $format .= '%-' . $length . 's ';
+    for my $i (0 .. $#longest) {
+        my $length  = $longest[$i];
+        my $numbers = $numbers[$i];
+
+        $format .= '%' . ($numbers ? '' : '-') . $length . 's ';
     }
     $format .= "\n";
 
@@ -169,7 +212,7 @@ if ($kind eq 'album') {
             [ 'ID', 'Name', 'Number', 'Bytes' ],
             map { 
                 [ $_->entry_id, $_->title, $_->number_of_photos, 
-                  $_->bytes_used ] 
+                  humanize_bytes($_->bytes_used) ] 
             } @albums
         );
     }
@@ -211,7 +254,7 @@ elsif ($kind eq 'photo') {
         print_list( photos =>
             [ 'ID', 'Name', 'Width', 'Height', 'Size' ],
             map { [ $_->entry_id, $_->title, $_->width, $_->height, 
-                    $_->size ] }
+                    humanize_bytes($_->size) ] }
                    @photos
         );
     }
@@ -337,6 +380,7 @@ picasa-list - list albums, photos, tags, or comments from Google Picasa Web
     --option <key>=<value>   special options: q, location, etc.
 
     --long                   show more information on each item
+    --human                  show byte values in human consumable abbreviations
     --quiet                  suppress messages
     
     --help                   get some help
@@ -449,6 +493,10 @@ This option allows you to specify arbitrary options on the Picasa Web query. To 
 =item B<--long>
 
 Show the long view. On albums this will add the album size and number of photos to the list. On photos this will add the width, height, and byte size of each photo.
+
+=item B<--human>
+
+Show byte values in a human readable form. So it will show byte values in the thousands will be shown in kilobytes, anything in the millions in Megabytes, etc. These use divisions based on powers of 2, not powers of 10 (i.e., always in kibibytes, Mebibytes, gibibytes, etc.)
 
 =item B<--quiet>
 
