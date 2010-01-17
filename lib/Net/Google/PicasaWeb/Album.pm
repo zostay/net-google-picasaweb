@@ -49,7 +49,41 @@ This is the URL to get to the author's public albums on Picasa Web.
 
 This is a link to the L<Net::Google::PicasaWeb::Media> object that is used to reference the cover photo and thumbnails of it.
 
+=head2 bytes_used
+
+This is the size of the album in bytes.
+
+=cut
+
+has bytes_used => (
+    is => 'rw',
+    isa => 'Int',
+);
+
+=head2 number_of_photos
+
+This is the number of photos in the albums.
+
+=cut
+
+has number_of_photos => (
+    is => 'rw',
+    isa => 'Int',
+);
+
 =head1 METHODS
+
+=cut
+
+override from_feed => sub {
+    my ($class, $service, $entry) = @_;
+    my $self = $class->super($service, $entry);
+
+    $self->bytes_used($entry->field('gphoto:bytesUsed'));
+    $self->number_of_photos($entry->field('gphoto:numphotos'));
+
+    return $self;
+};
 
 =head2 list_media_entries
 
