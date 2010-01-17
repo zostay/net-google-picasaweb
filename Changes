@@ -1,12 +1,13 @@
 Revision history for Net-Google-PicasaWeb
 
-X.XX    XXX XX, XXXX
+0.07    January 17, 2010
 
     * Adding height, width, and size to media entries (Thanks Benjamin Thomas)
     * Adding height and width to media objects (Thanks Benjamin Thomas)
     * Adding bytes_used and number_of_photos to albums
     * Added the --long option to picasa-list
     * Added the --human option to picasa-list
+    * Switched to Dist::Zilla for handling distribution
 
 0.06    November 23, 2009
 
