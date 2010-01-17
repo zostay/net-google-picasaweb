@@ -120,6 +120,8 @@ sub from_feed {
             url       => $content->att('url'),
             mime_type => $content->att('type'),
             medium    => $content->att('medium'),
+            height    => $content->att('height'),
+            width     => $content->att('width'),
         )
     );
     $self->thumbnails(
@@ -220,6 +222,28 @@ video
 has medium => (
     is => 'rw',
     isa => 'Str',
+);
+
+=head3 width
+
+The width of the photo in pixels.
+
+=cut
+
+has width => (
+    is => 'rw',  # should probably be 'ro'
+    isa => 'Undef | Int',
+);
+
+=head3 height
+
+The height of the photo in pixels.
+
+=cut
+
+has height => (
+    is => 'rw',  # should probably be 'ro'
+    isa => 'Undef | Int',
 );
 
 =head1 METHODS
