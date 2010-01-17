@@ -19,14 +19,6 @@ use Net::Google::PicasaWeb::MediaEntry;
 
 Net::Google::PicasaWeb - use Google's Picasa Web API
 
-=head1 VERSION
-
-Version 0.06
-
-=cut
-
-our $VERSION = '0.06';
-
 =head1 SYNOPSIS
 
   use Net::Google::PicasaWeb;
