@@ -14,7 +14,7 @@ my $kind    = 'album';
 my ($user_id, $album_id, $photo_id, $comment_id);
 my @rules;
 my %options;
-my $quiet;
+my ($long, $quiet);
 
 GetOptions(
     'username=s'   => \$username,
@@ -30,6 +30,7 @@ GetOptions(
 
     'option=s%'    => \%options,
 
+    'long'         => \$long,
     'quiet'        => \$quiet,
 
     help           => \$help,
@@ -163,10 +164,21 @@ if ($kind eq 'album') {
 
     find_items(@albums, @rules) if @rules;
 
-    print_list( albums =>
-        [ 'ID', 'Name' ],
-        map { [ $_->entry_id, $_->title ] } @albums
-    );
+    if ($long) {
+        print_list( albums =>
+            [ 'ID', 'Name', 'Number', 'Bytes' ],
+            map { 
+                [ $_->entry_id, $_->title, $_->number_of_photos, 
+                  $_->bytes_used ] 
+            } @albums
+        );
+    }
+    else {
+        print_list( albums =>
+            [ 'ID', 'Name' ],
+            map { [ $_->entry_id, $_->title ] } @albums
+        );
+    }
 }
 
 elsif ($kind eq 'photo') {
@@ -195,10 +207,20 @@ elsif ($kind eq 'photo') {
 
     find_items(@photos, @rules) if @rules;
 
-    print_list( photos =>
-        [ 'ID', 'Name' ],
-        map { [ $_->entry_id, $_->title ] } @photos
-    );
+    if ($long) {
+        print_list( photos =>
+            [ 'ID', 'Name', 'Width', 'Height', 'Size' ],
+            map { [ $_->entry_id, $_->title, $_->width, $_->height, 
+                    $_->size ] }
+                   @photos
+        );
+    }
+    else {
+        print_list( photos =>
+            [ 'ID', 'Name' ],
+            map { [ $_->entry_id, $_->title ] } @photos
+        );
+    }
 }
 
 elsif ($kind eq 'tag') {
@@ -314,6 +336,7 @@ picasa-list - list albums, photos, tags, or comments from Google Picasa Web
 
     --option <key>=<value>   special options: q, location, etc.
 
+    --long                   show more information on each item
     --quiet                  suppress messages
     
     --help                   get some help
@@ -422,6 +445,10 @@ content (only available on comments)
 =item B<--option>
 
 This option allows you to specify arbitrary options on the Picasa Web query. To see a list of available options, check L<Net::Google::PicasaWeb/STANDARD LIST OPTIONS>.
+
+=item B<--long>
+
+Show the long view. On albums this will add the album size and number of photos to the list. On photos this will add the width, height, and byte size of each photo.
 
 =item B<--quiet>
 
