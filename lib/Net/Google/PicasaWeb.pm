@@ -313,7 +313,11 @@ It accepts the following parameters:
 
 =item user_id
 
-If given, the photos will be limited to those owned by this user. If it is set to "default", then the authenticated user will be used. If no C<user_id> is set, then the community feed will be used rather than a specific user.
+If given, the photos will be limited to those owned by this user. If it is set to "default", then the authenticated user will be used. If no C<user_id> is set, then the community feed will be used rather than a specific user. This option may not be combined with C<featured>.
+
+=item featured
+
+This can be set to a true value to fetch the current featured photos on PicasaWeb. This option is not compatible with C<user_id>.
 
 =back
 
@@ -327,9 +331,16 @@ sub list_media_entries {
     my ($self, %params) = @_;
     $params{kind} = 'photo';
 
-    my $user_id = delete $params{user_id};
-    my $path   = [ 'user', $user_id ] if $user_id;
-       $path ||= 'all';
+    my $user_id  = delete $params{user_id};
+    my $featured = delete $params{featured};
+    
+    croak "user_id may not be combined with featured"
+        if $user_id and $featured;
+
+    my $path;
+    $path   = [ 'user', $user_id ] if $user_id;
+    $path   = 'featured'           if $featured;
+    $path ||= 'all';
 
     return $self->list_entries(
         'Net::Google::PicasaWeb::MediaEntry',
