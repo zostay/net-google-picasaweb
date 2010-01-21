@@ -1,5 +1,12 @@
 Revision history for Net-Google-PicasaWeb
 
+0.08    January 20, 2010
+
+    * Correct a missing requirement for Test::Mock::LWP (Thanks CPAN Testers
+      and Terrence Brannon)
+    * Added the "featured" option to list_media_entries().
+    * Added the --featured option to the picasaweb-list script.
+
 0.07    January 17, 2010
 
     * Adding height, width, and size to media entries (Thanks Benjamin Thomas)
