@@ -10,8 +10,9 @@ use Net::Google::PicasaWeb;
 
 my ($help, $man);
 my ($username, $password);
-my $kind    = 'album';
+my $kind;
 my ($user_id, $album_id, $photo_id, $comment_id);
+my $featured;
 my @rules;
 my %options;
 my ($long, $human, $quiet);
@@ -21,6 +22,7 @@ GetOptions(
     'password=s'   => \$password,
 
     'kind=s'       => \$kind,
+    'featured'     => \$featured,
     'user-id=s'    => \$user_id,
     'album-id=s'   => \$album_id,
     'photo-id=s'   => \$photo_id,
@@ -41,6 +43,11 @@ GetOptions(
 pod2usage(-verbose => 1) if $help;
 pod2usage(-verbose => 2) if $man;
 
+$kind ||= $featured ? 'photo' : 'album';
+
+pod2usage("$0: The --kind option must be photo if --featured is used")
+    if $featured and $kind and $kind ne 'photo';
+
 pod2usage("$0: The --kind option must be set to one of: album, photo, tag, comment")
     unless $kind eq 'album' or $kind eq 'photo'
         or $kind eq 'tag'   or $kind eq 'comment';
@@ -51,6 +58,9 @@ pod2usage("$0: You cannot use --photo-id when --kind is album")
 pod2usage("$0: You cannot use --find when --kind is tag")
     if $kind eq 'tag' and @rules;
 
+pod2usage("$0: You cannot user --user-id with --featured")
+    if $featured and $user_id;
+
 if (defined $username and not $password) {
     $password = prompt -echo => '', 'password: ';
 }
@@ -60,7 +70,8 @@ pod2usage("$0: You must give both --username and if you give --password")
 pod2usage("$0: You must enter a password if you give --username")
     if defined $username and not defined $password;
 
-$options{user_id} = $user_id if $user_id;
+$options{featured} = 1        if $featured;
+$options{user_id}  = $user_id if $user_id;
 
 my $service = Net::Google::PicasaWeb->new;
 
@@ -370,6 +381,7 @@ picasa-list - list albums, photos, tags, or comments from Google Picasa Web
     --password <password>    the password to login with
 
     --kind <kind>            "album", "photo", "tag", or "comment"
+    --featured               list featured photos (implies --kind photo)
     --user-id <user-id>      the user ID to look for albums or photos in 
     --album-id <album-id>    album ID to look in for photos, comments, or tags
     --photo-id <photo-id>    photo ID to look at for comments or tags
@@ -425,6 +437,10 @@ This will list all the tags matching the authenticated user or user ID given wit
 This will list all the comments made on the authenticated user's account or the one given by B<--user-id>.
 
 =back
+
+=item B<--featured>
+
+This fetches the list of current featured photos. This must not be used with C<--user-id> and implies that C<--kind> is set to "photo". (Setting C<--kind> to something other than "photo" is an error.)
 
 =item B<--user-id>
 
