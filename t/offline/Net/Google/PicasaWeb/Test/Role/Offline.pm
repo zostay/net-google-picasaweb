@@ -97,6 +97,7 @@ setup order => -10, setup_mock_response => sub {
     $response->set_always('code', 200);
     $response->set_always('content', '');
     $response->set_always('is_success', 1);
+    $response->set_always( is_error => '' );
 
     $self->headers($headers);
     $self->response($response);

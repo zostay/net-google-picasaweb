@@ -8,7 +8,6 @@ with qw( Net::Google::PicasaWeb::Test::Role::Offline );
 
 test plan => 15, get_album_ok => sub {
     my $self = shift;
-    $self->response->set_always(is_error => '');
 
     # Setup the list albums response
     {
