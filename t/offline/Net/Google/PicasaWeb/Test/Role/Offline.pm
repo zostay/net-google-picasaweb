@@ -108,4 +108,12 @@ setup setup_service => sub {
     $self->service( Net::Google::PicasaWeb->new );
 };
 
+sub set_response_content {
+    my ($self, $file) = @_;
+    my $path = "t/data/$file.xml";
+
+    open my $fh, $path or die "failed to open test data file $path: $!";
+    $self->response->set_always( content => do { local $/; <$fh> } );
+}
+
 1;

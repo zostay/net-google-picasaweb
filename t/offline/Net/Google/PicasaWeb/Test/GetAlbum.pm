@@ -10,10 +10,7 @@ test plan => 15, get_album_ok => sub {
     my $self = shift;
 
     # Setup the list albums response
-    {
-        open my $fh, 't/data/get_album.xml' or die "failed to open test data: $!";
-        $self->response->set_always(content => do { local $/; <$fh> });
-    }
+    $self->set_response_content('get_album');
 
     my $service = $self->service;
 

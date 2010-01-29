@@ -10,8 +10,7 @@ setup setup_list_alcums_content => sub {
     my $self = shift;
 
     # Setup the list albums response
-    open my $fh, 't/data/list_albums.xml' or die "failed to open test data: $!";
-    $self->response->set_always( content => do { local $/; <$fh> } );
+    $self->set_response_content('list_albums');
 };
 
 test plan => 29, list_albums_ok => sub {
@@ -85,10 +84,7 @@ test plan => 29, list_albums_for_other_user_ok => sub {
         'URL is user/foobar');
 
     # Setup the list photos response
-    {
-        open my $fh, 't/data/list_media_entries.xml' or die "failed to open test data: $!";
-        $response->set_always( content => do { local $/; <$fh> } );
-    }
+    $self->set_response_content('list_media_entries');
 
     my $album = $albums[0];
     my @photos = $album->list_media_entries;
@@ -138,10 +134,7 @@ test plan => 29, list_albums_for_other_user_ok => sub {
     }
 
     # Setup the list albums response
-    {
-        open my $fh, 't/data/list_tags.xml' or die "failed to open test data: $!";
-        $response->set_always( content => do { local $/; <$fh> } );
-    }
+    $self->set_response_content('list_tags');
 
     my @tags = $album->list_tags;
     is($request->{new_args}[1], 'GET', 'method is GET');
