@@ -121,8 +121,9 @@ sub from_feed {
             mime_type => $content->att('type'),
             medium    => $content->att('medium'),
 
-            ($content->att('height') ? (height => $content->att('height')) : ()),
-            ($content->att('width')  ? (width  => $content->att('width'))  : ()),
+            ($content->att('height')   ? (height => $content->att('height'))   : ()),
+            ($content->att('width')    ? (width  => $content->att('width'))    : ()),
+            ($content->att('fileSize') ? (size   => $content->att('fileSize')) : ()),
         )
     );
     $self->thumbnails(
@@ -245,6 +246,17 @@ The height of the photo in pixels.
 
 has height => (
     is => 'rw',  # should probably be 'ro'
+    isa => 'Int',
+);
+
+=head3 size
+
+The file size of the photo in bytes.
+
+=cut
+
+has size => (
+    is => 'rw',
     isa => 'Int',
 );
 
