@@ -47,11 +47,19 @@ This is the author/owner of the album. See L<Net::Google::PicasaWeb::Feed/author
 
 =head2 author_uri
 
-This is the URL to get to the author's public albums on Picasa Web. See L<Net::Google::PicasaWeb/author_uri>.
+This is the URL to get to the author's public albums on Picasa Web. See L<Net::Google::PicasaWeb::Feed/author_uri>.
 
 =head2 entry_id
 
-This is the identifier of the album used to look up a specific album in the API. This is the album ID. See L<Net::Google::PicasaWeb/entry_id>.
+This is the identifier of the album used to look up a specific album in the API. This is the album ID. See L<Net::Google::PicasaWeb::Feed/entry_id>.
+
+=head2 latitude
+
+The goe-coded latitude set on the album. See L<Net::Google::PicasaWeb::Feed/latitude>.
+
+=head2 longitude
+
+The geo-coded longitude set on the album. See L<Net::Google::PicasaWeb::Feed/longitude>.
 
 =head2 photo
 

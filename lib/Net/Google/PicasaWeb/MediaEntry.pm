@@ -47,6 +47,14 @@ This is the URL to get to the author's public albums on Picasa Web. See L<Net::G
 
 This is the ID of the photo that can be used to retrieve it directly. See L<Net::Google::PicasaWeb::Feed/entry_id>.
 
+=head2 latitude
+
+The geo-coded latitude set on the album. See L<Net::Google::PicasaWeb::Feed/latitude>.
+
+=head2 longitude
+
+The geo-coded longitude set on the album. See L<Net::Google::PicasaWeb::Feed/longitude>.
+
 =head2 photo
 
 This is a link to the L<Net::Google::PicasaWeb::Media> object that is used to reference the photo itself and its thumbnails. See L<Net::Google::PicasaWeb::MediaFeed>.

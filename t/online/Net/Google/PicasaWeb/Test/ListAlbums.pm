@@ -31,6 +31,17 @@ test plan => 'no_plan', happy_login_ok => sub {
         ok(defined $album->summary, 'got a summary');
         ok($album->author_name, 'got an author_name');
         ok($album->author_uri, 'got an author_uri');
+        ok((defined $album->latitude and defined $album->longitude)
+            or not (defined $album->latitude or defined $album->longitude),
+            'lat/long both defined or both not defined');
+        if (defined $album->latitude) {
+            ok($album->latitude >= -90, 'latitude is not too small');
+            ok($album->latitude <= 90, 'latitude is not too big');
+        }
+        if (defined $album->longitude) {
+            ok($album->longitude >= -180, 'longitude is not too small');
+            ok($album->longitude <= 180, 'longitude is not too big');
+        }
         ok($album->photo, 'got a photo');
         ok($album->bytes_used, 'got bytes used');
         ok($album->number_of_photos, 'got number of photos');

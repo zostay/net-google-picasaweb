@@ -95,6 +95,28 @@ has user_id => (
     isa => 'Str',
 );
 
+=head2 latitude
+
+This is the geo-coded latitude of the object.
+
+=cut
+
+has latitude => (
+    is => 'rw',
+    isa => 'Num',
+);
+
+=head2 longitude
+
+This is the geo-coded longitude of the object.
+
+=cut
+
+has longitude => (
+    is => 'rw',
+    isa => 'Num',
+);
+
 =head1 METHODS
 
 =head2 from_feed
@@ -130,6 +152,19 @@ sub from_feed {
         $params{user_id}   ||= $author->field('gphoto:user')
             if $author->has_child('gphoto:user');
     }
+
+    if (my $georss = $entry->first_child('georss:where')) {
+        if (my $point = $georss->first_child('gml:Point')) {      
+            if (my $pos = $point->field('gml:pos') ) {
+                
+                $pos =~ s/^\s+//;
+                my ($lat, $lon) = split /\s+/, $pos, 2;
+
+                $params{latitude}  = $lat;
+                $params{longitude} = $lon;
+            }
+        }
+    } 
 
     return $class->new(\%params);
 }

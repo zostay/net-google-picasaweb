@@ -466,6 +466,8 @@ sub _parse_feed {
         map_xmlns => {
             'http://search.yahoo.com/mrss/'         => 'media',
             'http://schemas.google.com/photos/2007' => 'gphoto',
+            'http://www.georss.org/georss'          => 'georss',
+            'http://www.opengis.net/gml'            => 'gml',
         },
         twig_handlers => {
             $element => sub {
