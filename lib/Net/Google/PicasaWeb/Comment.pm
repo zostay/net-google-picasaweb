@@ -24,7 +24,7 @@ Represents an individual Picasa Web comment. This class extends L<Net::Google::P
 
 =head1 ATTRIBUTES
 
-=haed2 url
+=head2 url
 
 The URL used to get information about the object. See L<Net::Google::PicasaWeb::Feed/url>.
 
