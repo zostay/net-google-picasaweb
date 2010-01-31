@@ -1,5 +1,25 @@
 Revision history for Net-Google-PicasaWeb
 
+0.09    January 31, 2010
+
+    * Dropped the requirement for Test::Mock::LWP
+    * Added a requirement for Test::Able
+    * Added a requirement for Test::Able::Runner
+    * Major change to the testing framework to make it easier to work with
+    * DO THIS AT YOUR OWN RISK!!! Added online tests to check certain aspects of
+      the API against a live PicasaWeb account. Set
+      TEST_NET_GOOGLE_PICASAWEB_ONLINE=1 and TEST_NGP_USER and TEST_NGP_PWD to a
+      username/password to run these tests.  This will login to the given
+      account and list some albums and photos.
+    * Added the size attribute to Net::Google::PicasaWeb::Media to get the file
+      size of the photo from the API, when presented.
+    * Expanded POD to note base class inheritance and more attributes inherited
+      from base classes to make it easier to browser without having to navigate
+      multiple manual pages. (Thanks Terrence Brannon)
+    * Added geo-coding support to Net::Google::PicasaWeb::Album and
+      Net::Google::PicasaWeb::Photo. This adds latitude and longitude attributes
+      to these objects, when available. (Thanks Benjamin Thomas)
+
 0.08    January 20, 2010
 
     * Correct a missing requirement for Test::Mock::LWP (Thanks CPAN Testers
