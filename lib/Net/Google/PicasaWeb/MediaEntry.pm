@@ -23,29 +23,33 @@ Net::Google::PicasaWeb::MediaEntry - represents a single Picasa Web photo or vid
 
 =head1 DESCRIPTION
 
-Represents an individual Picasa Web photo.
+Represents an individual Picasa Web photo. This class extends L<Net::Google::PicasaWeb::MediaFeed>.
 
 =head1 ATTRIBUTES
 
 =head2 title
 
-This is the title of the photo.
+This is the title of the photo. See L<Net::Google::PicasaWeb::Feed/title>.
 
 =head2 summary
 
-This is the summary description of the photo.
+This is the summary description of the photo. See L<Net::Google::PicasaWeb::Feed/summary>.
 
 =head2 author_name
 
-This is the author/owner of the photo.
+This is the author/owner of the photo. See L<Net::Google::PicasaWeb::Feed/author_name>.
 
 =head2 author_uri
 
-This is the URL to get to the author's public albums on Picasa Web.
+This is the URL to get to the author's public albums on Picasa Web. See L<Net::Google::PicasaWeb::Feed/author_uri>.
+
+=head2 entry_id
+
+This is the ID of the photo that can be used to retrieve it directly. See L<Net::Google::PicasaWeb::Feed/entry_id>.
 
 =head2 photo
 
-This is a link to the L<Net::Google::PicasaWeb::Media> object that is used to reference the photo itself and its thumbnails.
+This is a link to the L<Net::Google::PicasaWeb::Media> object that is used to reference the photo itself and its thumbnails. See L<Net::Google::PicasaWeb::MediaFeed>.
 
 =head2 album_id
 

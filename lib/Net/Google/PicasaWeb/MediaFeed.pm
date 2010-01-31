@@ -12,7 +12,13 @@ Net::Google::PicasaWeb::MediaFeed - base class for media feed entries
 
 =head1 DESCRIPTION
 
-Provides some common functions for the media-based objects (the ones with photo/video links).
+Provides some common functions for the media-based objects (the ones with photo/video links). This class extends L<Net::Google::PicasaWeb::Feed>.
+
+=head1 ATTRIBUTES
+
+=head2 photo
+
+This is the photo for the media feed object. This returns a L<Net::Google::Picasa::Media>.
 
 =cut
 

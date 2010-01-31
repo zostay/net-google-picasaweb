@@ -45,6 +45,8 @@ Net::Google::PicasaWeb::Media - hold information about a photo or video
 
 This is where you will find information about the photos, videos, and thumbnails themselves. You can get information about them with this object, such as the URL that can be used to download the media file. This object (and its children) also provide some features to fetching this information.
 
+This class extends L<Net::Google::PicasaWeb::Base>.
+
 =head1 ATTRIBUTE
 
 =head2 title

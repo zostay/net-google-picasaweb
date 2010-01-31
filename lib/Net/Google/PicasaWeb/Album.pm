@@ -25,25 +25,33 @@ Net::Google::PicasaWeb::Album - represents a single Picasa Web photo album
 
 =head1 DESCRIPTION
 
-Represents an individual Picasa Web photo album.
+Represents an individual Picasa Web photo album. This class extends L<Net::Google::PicasaWeb::Feed>.
 
 =head1 ATTRIBUTES
 
+=head2 url
+
+The URL used to get the album information. See L<Net::Google::PicasaWeb::Feed/url>.
+
 =head2 title
 
-This is the title of the album.
+This is the title of the album. See L<Net::Google::PicasaWeb::Feed/title>.
 
 =head2 summary
 
-This is the summary of the album.
+This is the summary of the album. See L<Net::Google::PicasaWeb::Feed/summary>.
 
 =head2 author_name
 
-This is the author/owner of the album.
+This is the author/owner of the album. See L<Net::Google::PicasaWeb::Feed/author_name>.
 
 =head2 author_uri
 
-This is the URL to get to the author's public albums on Picasa Web.
+This is the URL to get to the author's public albums on Picasa Web. See L<Net::Google::PicasaWeb/author_uri>.
+
+=head2 entry_id
+
+This is the identifier of the album used to look up a specific album in the API. This is the album ID. See L<Net::Google::PicasaWeb/entry_id>.
 
 =head2 photo
 

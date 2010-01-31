@@ -12,7 +12,15 @@ Net::Google::PicasaWeb::Feed - base class for feed entries
 
 =head1 DESCRIPTION
 
-Provides some common functions for feed-based objects.
+Provides some common functions for feed-based objects. This class extends L<Net::Google::PicasaWeb::Base>.
+
+=head1 ATTRIBUTES
+
+All feed-based objects have these attributes. However, they may not all be used.
+
+=head2 url
+
+The URL used to get information about the object.
 
 =cut
 
@@ -21,30 +29,66 @@ has url => (
     isa => 'Str',
 );
 
+=head2 title
+
+The title of the object.
+
+=cut
+
 has title => (
     is => 'rw',
     isa => 'Str',
 );
+
+=head2 summary
+
+The summary of the object. This is the long description of the album or caption of the photo.
+
+=cut
 
 has summary => (
     is => 'rw',
     isa => 'Str',
 );
 
+=head2 author_name
+
+This is the author/owner of the object.
+
+=cut
+
 has author_name => (
     is => 'rw',
     isa => 'Str',
 );
+
+=head2 author_uri
+
+This is the URL to get the author's public albums on Picasa Web.
+
+=cut
 
 has author_uri => (
     is => 'rw',
     isa => 'Str',
 );
 
+=head2 entry_id
+
+This is the ID that may be used with the object type to uniquely identify (and lookup) this object.
+
+=cut
+
 has entry_id => (
     is => 'rw',
     isa => 'Str',
 );
+
+=head2 user_id
+
+This is the account ID of the user.
+
+=cut
 
 has user_id => (
     is => 'rw',
