@@ -64,10 +64,10 @@ has authenticator => (
     is => 'rw',
     isa => 'Net::Google::AuthSub',
     default => sub {
-        my $VERSION = $Net::Google::PicasaWeb::VERSION || 'TEST';
+        my $version = $Net::Google::PicasaWeb::VERSION || 'TEST';
         Net::Google::AuthSub->new(
             service => 'lh2', # Picasa Web Albums
-            source  => 'Net::Google::PicasaWeb-'.$VERSION,
+            source  => 'Net::Google::PicasaWeb-'.$version,
         );
     },
 );
