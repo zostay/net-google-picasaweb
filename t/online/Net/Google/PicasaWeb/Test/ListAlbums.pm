@@ -9,13 +9,14 @@ with qw( Net::Google::PicasaWeb::Test::Role::Online );
 setup service_login => sub { shift->do_login };
 
 sub limit_to($@) {
-    my $max  = shift;
+    my $max = shift;
+    return () unless @_;
 
 #    return @_;
-    return @_ if @_ < $max;
+    return @_ if @_ <= $max;
 
     my @list = shuffle(@_);
-    return $list[0 .. $max - 1];
+    return @list[0 .. ($max - 1)];
 }
 
 test plan => 'no_plan', happy_login_ok => sub {
@@ -31,8 +32,8 @@ test plan => 'no_plan', happy_login_ok => sub {
         ok(defined $album->summary, 'got a summary');
         ok($album->author_name, 'got an author_name');
         ok($album->author_uri, 'got an author_uri');
-        ok((defined $album->latitude and defined $album->longitude)
-            or not (defined $album->latitude or defined $album->longitude),
+        ok(((defined $album->latitude && defined $album->longitude)
+            || (!(defined $album->latitude || defined $album->longitude))),
             'lat/long both defined or both not defined');
         if (defined $album->latitude) {
             ok($album->latitude >= -90, 'latitude is not too small');
