@@ -449,6 +449,11 @@ sub get_entry {
 sub _fetch_feed {
     my ($self, $path, %params) = @_;
 
+    # Allow thumbsize to be passed as an array
+    if (defined $params{thumbsize} and ref $params{thumbsize}) {
+        $params{thumbsize} = join ',', @{ $params{thumbsize} };
+    }
+
     my $response = $self->request( GET => $path => [ %params ] );
 
     if ($response->is_error) {
@@ -510,7 +515,13 @@ This is the L<http://code.google.com/apis/picasaweb/reference.html#Visibility|vi
 
 This option is only used when listing albums and photos or videos.
 
-By passing a single scalar or an array reference of scalars, you may select the size or sizes of thumbnails attached to the items returned. Please see the L<http://code.google.com/apis/picasaweb/reference.html#Parameters|parameters> documentation for a description of valid values.
+By passing a single scalar or an array reference of scalars, e.g.,
+
+  thumbsize => '72c',
+  thumbsize => [ qw( 104c 640u d ) ],
+  thumbsize => '1440u,1280u',
+
+You may select the size or sizes of thumbnails attached to the items returned. Please see the L<http://code.google.com/apis/picasaweb/reference.html#Parameters|parameters> documentation for a description of valid values.
 
 =item imgmax
 
