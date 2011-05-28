@@ -23,8 +23,8 @@ This is the photo for the media feed object. This returns a L<Net::Google::Picas
 =cut
 
 has photo => (
-    is => 'rw',
-    isa => 'Net::Google::PicasaWeb::Media',
+    is          => 'rw',
+    isa         => 'Net::Google::PicasaWeb::Media',
 );
 
 override from_feed => sub {

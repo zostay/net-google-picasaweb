@@ -25,8 +25,8 @@ The URL used to get information about the object.
 =cut
 
 has url => (
-    is => 'rw',
-    isa => 'Str',
+    is          => 'rw',
+    isa         => 'Str',
 );
 
 =head2 title
@@ -36,8 +36,8 @@ The title of the object.
 =cut
 
 has title => (
-    is => 'rw',
-    isa => 'Str',
+    is          => 'rw',
+    isa         => 'Str',
 );
 
 =head2 summary
@@ -47,8 +47,8 @@ The summary of the object. This is the long description of the album or caption 
 =cut
 
 has summary => (
-    is => 'rw',
-    isa => 'Str',
+    is          => 'rw',
+    isa         => 'Str',
 );
 
 =head2 author_name
@@ -58,8 +58,8 @@ This is the author/owner of the object.
 =cut
 
 has author_name => (
-    is => 'rw',
-    isa => 'Str',
+    is          => 'rw',
+    isa         => 'Str',
 );
 
 =head2 author_uri
@@ -69,8 +69,8 @@ This is the URL to get the author's public albums on Picasa Web.
 =cut
 
 has author_uri => (
-    is => 'rw',
-    isa => 'Str',
+    is          => 'rw',
+    isa         => 'Str',
 );
 
 =head2 entry_id
@@ -80,8 +80,8 @@ This is the ID that may be used with the object type to uniquely identify (and l
 =cut
 
 has entry_id => (
-    is => 'rw',
-    isa => 'Str',
+    is          => 'rw',
+    isa         => 'Str',
 );
 
 =head2 user_id
@@ -91,8 +91,8 @@ This is the account ID of the user.
 =cut
 
 has user_id => (
-    is => 'rw',
-    isa => 'Str',
+    is          => 'rw',
+    isa         => 'Str',
 );
 
 =head2 latitude
@@ -102,8 +102,8 @@ This is the geo-coded latitude of the object.
 =cut
 
 has latitude => (
-    is => 'rw',
-    isa => 'Num',
+    is          => 'rw',
+    isa         => 'Num',
 );
 
 =head2 longitude
@@ -113,8 +113,8 @@ This is the geo-coded longitude of the object.
 =cut
 
 has longitude => (
-    is => 'rw',
-    isa => 'Num',
+    is          => 'rw',
+    isa         => 'Num',
 );
 
 =head1 METHODS

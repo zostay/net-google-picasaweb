@@ -56,8 +56,8 @@ This is the title of the photo or video.
 =cut
 
 has title => (
-    is => 'rw',
-    isa => 'Str',
+    is         => 'rw',
+    isa        => 'Str',
 );
 
 =head2 description
@@ -67,8 +67,8 @@ This is a description for the photo or video.
 =cut
 
 has description => (
-    is => 'rw',
-    isa => 'Str',
+    is          => 'rw',
+    isa         => 'Str',
 );
 
 =head2 content
@@ -78,8 +78,8 @@ This is the main photo or video item attached to the media information entry. Se
 =cut
 
 has content => (
-    is => 'rw',
-    isa => 'Net::Google::PicasaWeb::Media::Content',
+    is          => 'rw',
+    isa         => 'Net::Google::PicasaWeb::Media::Content',
 );
 
 =head2 thumbnails
@@ -89,9 +89,9 @@ This is an array of object containing information about the thumbnails that were
 =cut
 
 has thumbnails => (
-    is => 'rw',
-    isa => 'ArrayRef[Net::Google::PicasaWeb::Media::Thumbnail]',
-    auto_deref => 1,
+    is          => 'rw',
+    isa         => 'ArrayRef[Net::Google::PicasaWeb::Media::Thumbnail]',
+    auto_deref  => 1,
 );
 
 =head1 METHODS
@@ -178,10 +178,10 @@ This is the parent L<Net::Google::PicasaWeb::Media> object.
 =cut
 
 has media => (
-    is => 'rw',
-    isa => 'Net::Google::PicasaWeb::Media',
-    required => 1,
-    weak_ref => 1,
+    is          => 'rw',
+    isa         => 'Net::Google::PicasaWeb::Media',
+    required    => 1,
+    weak_ref    => 1,
 );
 
 =head3 url
@@ -191,8 +191,8 @@ This is the URL where the photo or video may be downloaded from.
 =cut
 
 has url => (
-    is => 'rw',
-    isa => 'Str',
+    is          => 'rw',
+    isa         => 'Str',
 );
 
 =head3 mime_type
@@ -202,8 +202,8 @@ This is the MIME-Type of the photo or video.
 =cut
 
 has mime_type => (
-    is => 'rw',
-    isa => 'Str',
+    is         => 'rw',
+    isa        => 'Str',
 );
 
 =head3 medium
@@ -225,8 +225,8 @@ video
 =cut
 
 has medium => (
-    is => 'rw',
-    isa => 'Str',
+    is          => 'rw',
+    isa         => 'Str',
 );
 
 =head3 width
@@ -236,8 +236,8 @@ The width of the photo in pixels.
 =cut
 
 has width => (
-    is => 'rw',  # should probably be 'ro'
-    isa => 'Int',
+    is          => 'rw', 
+    isa         => 'Int',
 );
 
 =head3 height
@@ -247,8 +247,8 @@ The height of the photo in pixels.
 =cut
 
 has height => (
-    is => 'rw',  # should probably be 'ro'
-    isa => 'Int',
+    is          => 'rw',
+    isa         => 'Int',
 );
 
 =head3 size
@@ -258,8 +258,8 @@ The file size of the photo in bytes.
 =cut
 
 has size => (
-    is => 'rw',
-    isa => 'Int',
+    is          => 'rw',
+    isa         => 'Int',
 );
 
 =head1 METHODS
@@ -303,10 +303,10 @@ This is the parent L<Net::Google::PicasaWeb::Media> object.
 =cut
 
 has media => (
-    is => 'rw',
-    isa => 'Net::Google::PicasaWeb::Media',
-    required => 1,
-    weak_ref => 1,
+    is          => 'rw',
+    isa         => 'Net::Google::PicasaWeb::Media',
+    required    => 1,
+    weak_ref    => 1,
 );
 
 =head3 url
@@ -316,8 +316,8 @@ This is the URL where the thumbnail image can be pulled down from.
 =cut
 
 has url => (
-    is => 'rw',
-    isa => 'Str',
+    is          => 'rw',
+    isa         => 'Str',
 );
 
 =head3 width
@@ -327,8 +327,8 @@ This is the pixel width of the image.
 =cut
 
 has width => (
-    is => 'rw',
-    isa => 'Int',
+    is          => 'rw',
+    isa         => 'Int',
 );
 
 =head3 height
@@ -338,8 +338,8 @@ This is the pixel height of the image.
 =cut
 
 has height => (
-    is => 'rw',
-    isa => 'Int',
+    is          => 'rw',
+    isa         => 'Int',
 );
 
 =head1 METHODS

@@ -61,16 +61,19 @@ This is an L<Net::Google::AuthSub> object used to handle authentication. The def
 =cut
 
 has authenticator => (
-    is => 'rw',
-    isa => 'Net::Google::AuthSub',
-    default => sub {
-        my $version = $Net::Google::PicasaWeb::VERSION || 'TEST';
-        Net::Google::AuthSub->new(
-            service => 'lh2', # Picasa Web Albums
-            source  => 'Net::Google::PicasaWeb-'.$version,
-        );
-    },
+    is          => 'rw',
+    isa         => 'Net::Google::AuthSub',
+    required    => 1,
+    lazy_build  => 1,
 );
+
+sub _build_authenticator {
+    my $version = $Net::Google::PicasaWeb::VERSION || 'TEST';
+    Net::Google::AuthSub->new(
+        service => 'lh2', # Picasa Web Albums
+        source  => 'Net::Google::PicasaWeb-'.$version,
+    );
+}
 
 =head2 user_agent
 
@@ -79,13 +82,29 @@ This is an L<LWP::UserAgent> object used to handle web communication.
 =cut
 
 has user_agent => (
-    is => 'rw',
-    isa => 'LWP::UserAgent',
-    default => sub {
-        LWP::UserAgent->new(
-            cookie_jar => {},
-        );
-    },
+    is          => 'rw',
+    isa         => 'LWP::UserAgent',
+    required    => 1,
+    lazy_build  => 1,
+);
+
+sub _build_user_agent {
+    LWP::UserAgent->new(
+        cookie_jar => {},
+    );
+}
+
+=head2 service_base_url
+
+This is the base URL of the API to contact. This should probably always be C<http://picasaweb.google.com/data/feed/api/> unless Google starts providing alternate URLs or someone has a service providing the same API elsewhere..
+
+=cut
+
+has service_base_url => (
+    is          => 'rw',
+    isa         => 'Str',
+    required    => 1,
+    default     => 'http://picasaweb.google.com/data/feed/api/',
 );
 
 =head1 METHODS
@@ -252,7 +271,7 @@ sub _feed_url {
     my ($self, $path, $query) = @_;
 
     $path = join '/', @$path if ref $path;
-    $path = 'http://picasaweb.google.com/data/feed/api/' . $path
+    $path = $self->service_base_url . $path
         unless $path =~ m{^https?:};
 
     my $uri = URI->new($path);
@@ -350,8 +369,8 @@ sub list_media_entries {
     );
 }
 
-*list_photos = *list_media_entries;
-*list_videos = *list_media_entries;
+sub list_photos { shift->list_media_entries(@_) }
+sub list_videos { shift->list_media_entries(@_) }
 
 =head2 get_media_entry
 
@@ -392,8 +411,8 @@ sub get_media_entry {
     );
 }
 
-*get_photo = *get_media_entry;
-*get_video = *get_media_entry;
+sub get_photo { shift->get_media_entry(@_) }
+sub get_video { shift->get_media_entry(@_) }
 
 =head1 HELPERS
 
@@ -567,7 +586,7 @@ Andrew Sterling Hanenkamp, C<< <hanenkamp at cpan.org> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-net-google-photos at rt.cpan.org>, or through
+Please report any bugs or feature requests to C<bug-Net-Google-PicasaWeb at rt.cpan.org>, or through
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Net-Google-PicasaWeb>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 

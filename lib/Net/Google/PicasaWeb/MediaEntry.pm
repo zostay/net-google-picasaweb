@@ -66,8 +66,8 @@ This is the ID of the album that the photo belongs to.
 =cut
 
 has album_id => (
-    is => 'rw',
-    isa => 'Str',
+    is          => 'rw',
+    isa         => 'Str',
 );
 
 =head2 width
@@ -77,8 +77,8 @@ The width of the video or photo in pixels.
 =cut
 
 has width => (
-    is => 'rw',  # should probably be 'ro'
-    isa => 'Int',
+    is          => 'rw',
+    isa         => 'Int',
 );
 
 =head2 height
@@ -88,8 +88,8 @@ The height of the video or photo in pixels.
 =cut
 
 has height => (
-    is => 'rw',  # should probably be 'ro'
-    isa => 'Int',
+    is          => 'rw',
+    isa         => 'Int',
 );
 
 =head2 size
@@ -99,8 +99,8 @@ The size of the video or photo in bytes.
 =cut
 
 has size => (
-    is => 'rw',  # should probably be 'ro'
-    isa => 'Int',
+    is          => 'rw',
+    isa         => 'Int',
 );
 
 =head1 METHODS

@@ -25,10 +25,10 @@ This is a link back to the parent L<Net::Google::PicasaWeb> class responsible fo
 =cut
 
 has service => (
-    is => 'rw',
-    isa => 'Net::Google::PicasaWeb',
-    required => 1,
-    weak_ref => 1,
+    is          => 'rw',
+    isa         => 'Net::Google::PicasaWeb',
+    required    => 1,
+    weak_ref    => 1,
 );
 
 =head2 twig
@@ -40,8 +40,8 @@ B<Note:> There is no guarantee that future versions of this library will be base
 =cut
 
 has twig => (
-    is => 'rw',
-    isa => 'XML::Twig::Elt',
+    is          => 'rw',
+    isa         => 'XML::Twig::Elt',
 );
 
 =head1 AUTHOR

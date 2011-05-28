@@ -39,8 +39,8 @@ This is the comment that was made.
 =cut
 
 has content => (
-    is => 'rw',
-    isa => 'Str',
+    is          => 'rw',
+    isa         => 'Str',
 );
 
 =head2 author_name

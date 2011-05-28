@@ -72,8 +72,9 @@ This is the size of the album in bytes.
 =cut
 
 has bytes_used => (
-    is => 'rw',
-    isa => 'Int',
+    is          => 'rw',
+    isa         => 'Int',
+    predicate   => 'has_bytes_used',
 );
 
 =head2 number_of_photos
@@ -83,8 +84,9 @@ This is the number of photos in the albums.
 =cut
 
 has number_of_photos => (
-    is => 'rw',
-    isa => 'Int',
+    is          => 'rw',
+    isa         => 'Int',
+    predicate   => 'has_number_of_photos',
 );
 
 =head1 METHODS
@@ -95,8 +97,10 @@ override from_feed => sub {
     my ($class, $service, $entry) = @_;
     my $self = $class->super($service, $entry);
 
-    $self->bytes_used($entry->field('gphoto:bytesUsed'));
-    $self->number_of_photos($entry->field('gphoto:numphotos'));
+    $self->bytes_used($entry->field('gphoto:bytesUsed'))
+        if $entry->field('gphoto:bytesUsed');
+    $self->number_of_photos($entry->field('gphoto:numphotos'))
+        if $entry->field('gphoto:numphotos');;
 
     return $self;
 };
@@ -128,8 +132,8 @@ sub list_media_entries {
     );
 }
 
-*list_photos = *list_media_entries;
-*list_videos = *list_media_entries;
+sub list_photos { shift->list_media_entries(@_) }
+sub list_videos { shift->list_media_entries(@_) }
 
 =head2 list_tags
 
