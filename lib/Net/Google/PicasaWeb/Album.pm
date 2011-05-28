@@ -1,10 +1,7 @@
-use strict;
-use warnings;
-
-# ABSTRACT: represents a single Picasa Web photo album
-
 package Net::Google::PicasaWeb::Album;
 use Moose;
+
+# ABSTRACT: represents a single Picasa Web photo album
 
 extends 'Net::Google::PicasaWeb::MediaFeed';
 

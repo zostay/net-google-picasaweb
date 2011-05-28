@@ -1,10 +1,7 @@
-use warnings;
-use strict;
-
-# ABSTRACT: use Google's Picasa Web API
-
 package Net::Google::PicasaWeb;
 use Moose;
+
+# ABSTRACT: use Google's Picasa Web API
 
 use Carp;
 use HTTP::Request::Common;

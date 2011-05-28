@@ -1,6 +1,3 @@
-use strict;
-use warnings;
-
 package Net::Google::PicasaWeb::Base;
 use Moose;
 

@@ -1,6 +1,3 @@
-use strict;
-use warnings;
-
 package Net::Google::PicasaWeb::Feed;
 use Moose;
 
