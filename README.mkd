@@ -1,0 +1,20 @@
+# Net-Google-Picasaweb
+
+This is both a library and a set of simple scripts for reading information about
+a Google PicasaWeb account.
+
+If you download it from github, you will need to install it using Dist::Zilla.
+
+    cpanm Dist::Zilla
+    dzil authodepts | cpanm
+    dzil install
+
+Probably, however, you will want to install it from CPAN.
+
+    cpanm Net::Google::PicasaWeb
+
+or, if you don't have cpanm available:
+
+    perl -MCPAN -e 'install Net::Google::PicasaWeb'
+
+
