@@ -39,4 +39,6 @@ has twig => (
     isa         => 'XML::Twig::Elt',
 );
 
+__PACKAGE__->meta->make_immutable;
+
 1;

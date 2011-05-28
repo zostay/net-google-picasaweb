@@ -362,4 +362,6 @@ sub fetch {
     return $self->media->_fetch($self, @_);
 }
 
+__PACKAGE__->meta->make_immutable;
+
 1;

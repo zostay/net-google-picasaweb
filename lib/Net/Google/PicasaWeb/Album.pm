@@ -150,4 +150,6 @@ sub list_tags {
     );
 }
 
+__PACKAGE__->meta->make_immutable;
+
 1;

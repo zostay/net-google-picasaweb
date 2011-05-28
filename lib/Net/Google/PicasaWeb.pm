@@ -627,4 +627,6 @@ Simon Wistow for L<Net::Google::AuthSub>, which took care of all the authenticat
 
 =cut
 
+__PACKAGE__->meta->make_immutable;
+
 1;

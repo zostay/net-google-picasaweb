@@ -36,4 +36,6 @@ override from_feed => sub {
     return $self;
 };
 
+__PACKAGE__->meta->make_immutable;
+
 1;

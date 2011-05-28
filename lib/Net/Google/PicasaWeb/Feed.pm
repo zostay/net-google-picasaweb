@@ -164,4 +164,6 @@ sub from_feed {
     return $class->new(\%params);
 }
 
+__PACKAGE__->meta->make_immutable;
+
 1;

@@ -62,4 +62,6 @@ This is the unique ID for the comment. See L<Net::Google::PicasaWeb::Feed/entry_
 
 =cut
 
+__PACKAGE__->meta->make_immutable;
+
 1;
