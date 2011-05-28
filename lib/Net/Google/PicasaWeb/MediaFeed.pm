@@ -6,9 +6,7 @@ use Moose;
 
 extends 'Net::Google::PicasaWeb::Feed';
 
-=head1 NAME
-
-Net::Google::PicasaWeb::MediaFeed - base class for media feed entries
+# ABSTRACT: base class for media feed entries
 
 =head1 DESCRIPTION
 
@@ -40,18 +38,5 @@ override from_feed => sub {
 
     return $self;
 };
-
-=head1 AUTHOR
-
-Andrew Sterling Hanenkamp, C<< <hanenkamp at cpan.org> >>
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008 Andrew Sterling Hanenkamp
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
-=cut
 
 1;

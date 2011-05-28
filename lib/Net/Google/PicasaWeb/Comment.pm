@@ -4,11 +4,9 @@ use warnings;
 package Net::Google::PicasaWeb::Comment;
 use Moose;
 
+# ABSTRACT: represents a single Picasa Web comment
+
 extends 'Net::Google::PicasaWeb::Feed';
-
-=head1 NAME
-
-Net::Google::PicasaWeb::Comment - represents a single Picasa Web comment
 
 =head1 SYNOPSIS
 
@@ -64,17 +62,6 @@ override from_feed => sub {
 =head2 entry_id
 
 This is the unique ID for the comment. See L<Net::Google::PicasaWeb::Feed/entry_id>.
-
-=head1 AUTHOR
-
-Andrew Sterling Hanenkamp, C<< <hanenkamp at cpan.org> >>
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008 Andrew Sterling Hanenkamp
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
 
 =cut
 

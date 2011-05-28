@@ -4,11 +4,9 @@ use warnings;
 package Net::Google::PicasaWeb::MediaEntry;
 use Moose;
 
+# ABSTRACT: represents a single Picasa Web photo or video
+
 extends 'Net::Google::PicasaWeb::MediaFeed';
-
-=head1 NAME
-
-Net::Google::PicasaWeb::MediaEntry - represents a single Picasa Web photo or video
 
 =head1 SYNOPSIS
 
@@ -160,18 +158,5 @@ sub list_comments {
         %params
     );
 }
-
-=head1 AUTHOR
-
-Andrew Sterling Hanenkamp, C<< <hanenkamp at cpan.org> >>
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008 Andrew Sterling Hanenkamp
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
-=cut
 
 1;

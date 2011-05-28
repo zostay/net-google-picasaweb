@@ -2,6 +2,9 @@
 use strict;
 use warnings;
 
+# PODNAME: picasa
+# ABSTRACT: master command for the Picasa Web scripts
+
 use FindBin;
 use Pod::Usage;
 

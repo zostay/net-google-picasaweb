@@ -1,16 +1,14 @@
 use strict;
 use warnings;
 
+# ABSTRACT: represents a single Picasa Web photo album
+
 package Net::Google::PicasaWeb::Album;
 use Moose;
 
 extends 'Net::Google::PicasaWeb::MediaFeed';
 
 use Net::Google::PicasaWeb::Media;
-
-=head1 NAME
-
-Net::Google::PicasaWeb::Album - represents a single Picasa Web photo album
 
 =head1 SYNOPSIS
 
@@ -154,18 +152,5 @@ sub list_tags {
         %params
     );
 }
-
-=head1 AUTHOR
-
-Andrew Sterling Hanenkamp, C<< <hanenkamp at cpan.org> >>
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008 Andrew Sterling Hanenkamp.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
-=cut
 
 1;

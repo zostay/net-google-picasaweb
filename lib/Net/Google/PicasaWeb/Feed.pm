@@ -4,11 +4,9 @@ use warnings;
 package Net::Google::PicasaWeb::Feed;
 use Moose;
 
+# ABSTRACT: base class for feed entries
+
 extends 'Net::Google::PicasaWeb::Base';
-
-=head1 NAME
-
-Net::Google::PicasaWeb::Feed - base class for feed entries
 
 =head1 DESCRIPTION
 
@@ -168,18 +166,5 @@ sub from_feed {
 
     return $class->new(\%params);
 }
-
-=head1 AUTHOR
-
-Andrew Sterling Hanenkamp, C<< <hanenkamp at cpan.org> >>
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008 Andrew Sterling Hanenkamp
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
-=cut
 
 1;
