@@ -1,11 +1,12 @@
 Revision history for Net-Google-PicasaWeb
 
+{{$NEXT}}
+
 0.10    August 28, 2010
 
     * Updating to use the latest Dist::Zilla 4
     * Correcting the code to handle thumbsize as described in the documentation.
       (HT: Daniel Schröer)
-    * 
 
 0.09    January 31, 2010
 
