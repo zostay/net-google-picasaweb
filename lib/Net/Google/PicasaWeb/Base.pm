@@ -37,7 +37,22 @@ B<Note:> There is no guarantee that future versions of this library will be base
 has twig => (
     is          => 'rw',
     isa         => 'XML::Twig::Elt',
+    handles     => {
+        xml_text  => 'first_child_text',
+    },
 );
+
+=head1 METHODS
+
+=head2 xml_text
+
+Given the name of a tag expected in the feed or entry used to define this class, return the text in that element.
+
+This can be helpful at getting into fields passed back from Google that aren't part of the API provided by L<Net::Google::PicasaWeb> (yet). This is only available for objects created by fetching or listing from Google's API.
+
+If you need something more complex than this, you will need to try to use the L</twig> attribute. However, since that attribute is not guaranteed to exist in a future release, use at your own risk. Personally, I'd recommend forking the API on github, patching the code to add the support you want, and submitting a ticket to CPAN RT and beg the author to add it to the next release. If you provide a test, it's very likely your patch will be included quickly.
+
+=cut
 
 __PACKAGE__->meta->make_immutable;
 

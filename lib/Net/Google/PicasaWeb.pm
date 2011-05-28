@@ -102,6 +102,37 @@ has service_base_url => (
     default     => 'http://picasaweb.google.com/data/feed/api/',
 );
 
+=head2 xml_namespaces
+
+When parsing the Google Data API response, these are the namespaces that will be used. By default, this is defined as:
+
+    {
+        'http://search.yahoo.com/mrss/'         => 'media',
+        'http://schemas.google.com/photos/2007' => 'gphoto',
+        'http://www.georss.org/georss'          => 'georss',
+        'http://www.opengis.net/gml'            => 'gml',
+    }
+
+You may add more namespaces to this list, if needed.
+
+=cut
+
+has xml_namespaces => (
+    is          => 'rw',
+    isa         => 'HashRef[Str]',
+    required    => 1,
+    lazy_build  => 1,
+);
+
+sub _build_xml_namespaces {
+    {
+        'http://search.yahoo.com/mrss/'         => 'media',
+        'http://schemas.google.com/photos/2007' => 'gphoto',
+        'http://www.georss.org/georss'          => 'georss',
+        'http://www.opengis.net/gml'            => 'gml',
+    }
+}
+
 =head1 METHODS
 
 =head2 new
@@ -482,12 +513,7 @@ sub _parse_feed {
 
     my @items;
     my $feed = XML::Twig->new( 
-        map_xmlns => {
-            'http://search.yahoo.com/mrss/'         => 'media',
-            'http://schemas.google.com/photos/2007' => 'gphoto',
-            'http://www.georss.org/georss'          => 'georss',
-            'http://www.opengis.net/gml'            => 'gml',
-        },
+        map_xmlns => $self->xml_namespaces,
         twig_handlers => {
             $element => sub {
                 push @items, $class->from_feed($self, $_);
