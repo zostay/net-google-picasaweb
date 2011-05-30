@@ -2,6 +2,19 @@ Revision history for Net-Google-PicasaWeb
 
 {{$NEXT}}
 
+    * Album loading sometimes failed because certain Moose attributes were set
+      to be required when they shouldn't have been. (HT: Riccardo Mativi)
+    * Migrating it to use my regulate Dist::Zilla setup (mostly)
+    * Reorganized the project layout a little bit
+    * Cleaned up the code a bit
+    * Added calls to make_immutable to all classes, which should spead things up
+      slightly.
+    * Added some more attributes to control some of the previously hardcoded
+      bits (like Google's URL and which namespaces to map in the API).
+    * Added the xml_text() method to the base class to give "official" access to
+      the internals of certain elements passed back by Google, but haven't been
+      mapped to an attribute yet..
+
 0.10    August 28, 2010
 
     * Updating to use the latest Dist::Zilla 4
