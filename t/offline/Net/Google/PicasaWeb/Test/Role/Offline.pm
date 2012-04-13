@@ -75,6 +75,7 @@ setup order => -10, setup_mock_request => sub {
     $request->set_always('header', '');
     $request->set_always('content', '');
 
+    $request->mock(push_header => sub { });
     $request->mock('-new_args', sub { delete $request->{new_args} });
 
     $self->request($request);

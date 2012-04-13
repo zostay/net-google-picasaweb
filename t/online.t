@@ -1,8 +1,18 @@
 use Test::Able::Runner;
 use Test::Builder;
+use Net::Netrc;
 
 {
     no warnings 'once';
+
+    # Fallback to ~/.netrc
+    if (not defined $ENV{TEST_NGP_USER}) {
+        my $mach = Net::Netrc->lookup("picasaweb.google.com");
+        if ($mach) {
+            $ENV{TEST_NGP_USER} = $mach->login;
+            $ENV{TEST_NGP_PWD}  = $mach->password;
+        }
+    }
     $Net::Google::PicasaWeb::Test::USER = $ENV{TEST_NGP_USER};
     $Net::Google::PicasaWeb::Test::PWD  = $ENV{TEST_NGP_PWD};
 }
