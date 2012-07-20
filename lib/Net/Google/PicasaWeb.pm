@@ -816,6 +816,26 @@ L<http://search.cpan.org/dist/Net-Google-PicasaWeb>
 
 =head1 ACKNOWLEDGEMENTS
 
+Authors:
+
+=over
+
+=item *
+
+Sterling Hanenkamp (zostay)
+
+=item *
+
+Andy Shevchenko (andy-shev)
+
+=item *
+
+Benjamin Thomas (bth0mas)
+
+=item *
+
+Tomáš Znamenáček (zoul)
+
 Thanks to:
 
 =over
