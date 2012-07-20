@@ -12,7 +12,6 @@ sub limit_to($@) {
     my $max = shift;
     return () unless @_;
 
-#    return @_;
     return @_ if @_ <= $max;
 
     my @list = shuffle(@_);
