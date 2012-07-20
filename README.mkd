@@ -6,7 +6,7 @@ a Google PicasaWeb account.
 If you download it from github, you will need to install it using Dist::Zilla.
 
     cpanm Dist::Zilla
-    dzil authodepts | cpanm
+    dzil authodeps | cpanm
     dzil install
 
 Probably, however, you will want to install it from CPAN.
