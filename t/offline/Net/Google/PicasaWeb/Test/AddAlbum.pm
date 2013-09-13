@@ -14,7 +14,8 @@ test plan => 8, add_album_ok => sub {
 
     my $service = $self->service;
 
-    my @albums = $service->add_album(
+    my @albums = new Net::Google::PicasaWeb::Album(
+		service => $service,
         title => 'Net::PicasaWeb test',
         summary => 'Summary of the album',
         location => 'Finland',
