@@ -24,7 +24,7 @@ has photo => (
 
 override from_feed => sub {
     my ($class, $service, $entry) = @_;
-    my $self = $class->super($service, $entry);
+    my $self = super();
 
     if ($entry->has_child('media:group')) {
         my $media = Net::Google::PicasaWeb::Media->from_feed(

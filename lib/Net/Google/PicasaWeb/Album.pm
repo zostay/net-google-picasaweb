@@ -90,7 +90,7 @@ has number_of_photos => (
 
 override from_feed => sub {
     my ($class, $service, $entry) = @_;
-    my $self = $class->super($service, $entry);
+    my $self = super();
 
     $self->bytes_used($entry->field('gphoto:bytesUsed'))
         if $entry->field('gphoto:bytesUsed');

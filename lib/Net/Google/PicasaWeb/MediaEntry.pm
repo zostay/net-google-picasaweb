@@ -104,7 +104,7 @@ has size => (
 
 override from_feed => sub {
     my ($class, $service, $entry) = @_;
-    my $self = $class->super($service, $entry);
+    my $self = super();
 
     $self->album_id($entry->field('gphoto:albumid'));
 
