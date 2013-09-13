@@ -13,7 +13,7 @@ setup get_media_entry_data => sub {
     $self->set_response_content('get_media_entry');
 };
 
-test plan => 23, get_media_entry_ok => sub {
+test plan => 24, get_media_entry_ok => sub {
     my $self = shift;
 
     my $service = $self->service;
@@ -35,7 +35,8 @@ test plan => 23, get_media_entry_ok => sub {
     is($media->author_name, 'Chuck G', 'author_name is Chuck G');
     is($media->author_uri, 'http://picasaweb.google.com/captaincool', 
         'author_uri is correct');
-
+    is($media->timestamp, '1196770081000', 'timestamp is correct');
+	 
     my $photo = $media->photo;
     is($photo->title, 'Nash2.jpg', 'photo title is correct');
     is($photo->description, "", 'photo description is empty');
