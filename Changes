@@ -2,6 +2,10 @@ Revision history for Net-Google-PicasaWeb
 
 {{$NEXT}}
 
+    * Fixed failing tests. (HT: shroeer)
+    * Added support for the timestamp attribute (HT: shroeer)
+    * Eliminate some Moose whineyness (HT: shroeer)
+
 0.11      2011-05-30 09:35:19 America/Chicago
 
     * Album loading sometimes failed because certain Moose attributes were set
