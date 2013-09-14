@@ -98,13 +98,24 @@ has size => (
     isa         => 'Int',
 );
 
+=head2 timestamp
+
+The timestamp of the video or photo in bytes.
+
+=cut
+
+has timestamp => (
+    is => 'rw',  # should probably be 'ro'
+    isa => 'Int',
+);
+
 =head1 METHODS
 
 =cut
 
 override from_feed => sub {
     my ($class, $service, $entry) = @_;
-    my $self = $class->super($service, $entry);
+    my $self = super();
 
     $self->album_id($entry->field('gphoto:albumid'));
 
@@ -114,6 +125,8 @@ override from_feed => sub {
         if $entry->field('gphoto:height');
     $self->size($entry->field('gphoto:size'))
         if $entry->field('gphoto:size');
+    $self->timestamp($entry->field('gphoto:timestamp'))
+         if $entry->field('gphoto:timestamp');
 
     return $self;
 };

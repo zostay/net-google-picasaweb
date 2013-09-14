@@ -50,7 +50,7 @@ This is the URL to get to the author's public albums on Picasa Web. See L<Net::G
 
 override from_feed => sub {
     my ($class, $service, $entry) = @_;
-    my $self = $class->super($service, $entry);
+    my $self = super();
 
     $self->content($entry->field('content'));
     return $self;

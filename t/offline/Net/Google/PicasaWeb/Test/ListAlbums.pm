@@ -77,11 +77,11 @@ test plan => 29, list_albums_for_other_user_ok => sub {
     my $request  = $self->request;
     my $response = $self->response;
 
-    my @albums = $service->list_albums( user_id => 'foobar', q => 'blah', thumbsize => [ qw( 72c 104u d ) ] );
+    my @albums = $service->list_albums( user_id => 'foobar' );
     is($request->{new_args}[1], 'GET', 'method is GET');
     ok(URI::eq($request->{new_args}[2], 
-        'http://picasaweb.google.com/data/feed/api/user/foobar?kind=album&q=blah&thumbsize=72c%2C104u%2Cd'), 
-        'URL is user/foobar with expected arguments') or diag explain $request->{new_args}[2];
+        'http://picasaweb.google.com/data/feed/api/user/foobar?kind=album'), 
+        'URL is user/foobar with expected arguments') or diag $request->{new_args}[2];
 
     # Setup the list photos response
     $self->set_response_content('list_media_entries');
