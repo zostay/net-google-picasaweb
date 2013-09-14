@@ -16,6 +16,8 @@ use Net::Google::PicasaWeb::Album;
 use Net::Google::PicasaWeb::Comment;
 use Net::Google::PicasaWeb::MediaEntry;
 
+=encoding utf8
+
 =head1 SYNOPSIS
 
   use Net::Google::PicasaWeb;
@@ -728,7 +730,7 @@ Several of the listing methods return entries that can be modified by setting th
 
 =item access
 
-This is the L<http://code.google.com/apis/picasaweb/reference.html#Visibility|visibility value> to limit the returned results to.
+This is the L<visibility value|http://code.google.com/apis/picasaweb/reference.html#Visibility> to limit the returned results to.
 
 =item thumbsize
 
@@ -740,13 +742,13 @@ By passing a single scalar or an array reference of scalars, e.g.,
   thumbsize => [ qw( 104c 640u d ) ],
   thumbsize => '1440u,1280u',
 
-You may select the size or sizes of thumbnails attached to the items returned. Please see the L<http://code.google.com/apis/picasaweb/reference.html#Parameters|parameters> documentation for a description of valid values.
+You may select the size or sizes of thumbnails attached to the items returned. Please see the L<parameters|http://code.google.com/apis/picasaweb/reference.html#Parameters> documentation for a description of valid values.
 
 =item imgmax
 
 This option is only used when listing albums and photos or videos.
 
-This is a single scalar selecting the size of the main image to return with the items found. Please see the L<http://code.google.com/apis/picasaweb/reference.html#Parameters|parameters> documentation for a description of valid values.
+This is a single scalar selecting the size of the main image to return with the items found. Please see the L<parameters|http://code.google.com/apis/picasaweb/reference.html#Parameters> documentation for a description of valid values.
 
 =item tag
 
@@ -835,6 +837,8 @@ Benjamin Thomas (bth0mas)
 =item *
 
 Tomáš Znamenáček (zoul)
+
+=back
 
 Thanks to:
 
