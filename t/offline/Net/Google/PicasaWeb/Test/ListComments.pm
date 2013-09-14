@@ -41,11 +41,11 @@ test plan => 2, user_list_comments_ok => sub {
     my $service = $self->service;
     my $request = $self->request;
     
-    $service->list_comments( user_id => 'foobar', q => 'blah' );
+    $service->list_comments( user_id => 'foobar' );
     is($request->{new_args}[1], 'GET', 'method is GET');
     ok(URI::eq($request->{new_args}[2], 
-        'http://picasaweb.google.com/data/feed/api/user/foobar?kind=comment&q=blah'), 
-        'URL is user/foobar');
+        'http://picasaweb.google.com/data/feed/api/user/foobar?kind=comment'), 
+        'URL is user/foobar') or diag $request->{new_args}[2];
 };
 
 1;

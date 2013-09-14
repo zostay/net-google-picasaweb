@@ -36,11 +36,11 @@ test plan => 2, user_list_tags_ok => sub {
     my $service = $self->service;
     my $request = $self->request;
 
-    $service->list_tags( user_id => 'foobar', q => 'blah' );
+    $service->list_tags( user_id => 'foobar' );
     is($request->{new_args}[1], 'GET', 'method is GET');
     ok(URI::eq($request->{new_args}[2], 
-        'http://picasaweb.google.com/data/feed/api/user/foobar?kind=tag&q=blah'), 
-        'URL is user/foobar');
+        'http://picasaweb.google.com/data/feed/api/user/foobar?kind=tag'), 
+        'URL is user/foobar') or diag $request->{new_args}[2];
 };
 
 1;

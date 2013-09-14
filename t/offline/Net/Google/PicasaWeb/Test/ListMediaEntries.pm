@@ -73,11 +73,11 @@ test plan => 37, list_media_entries_ok => sub {
         is($thumbnail->width, 288, 'photo thumbnail width is 288');
     }
 
-    $service->list_photos( user_id => 'foobar', q => 'blah' );
+    $service->list_photos( user_id => 'foobar' );
     is($request->{new_args}[1], 'GET', 'method is GET');
-    ok(URI::eq($request->{new_args}[2], 
-        'http://picasaweb.google.com/data/feed/api/user/foobar?kind=photo&q=blah'), 
-        'URL is user/foobar');
+	ok(URI::eq($request->{new_args}[2], 
+        'http://picasaweb.google.com/data/feed/api/user/foobar?kind=photo'), 
+        'URL is user/foobar') or diag $request->{new_args}[2];
 
     # Setup the list albums response
     $self->set_response_content('list_tags');
